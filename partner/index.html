@@ -1121,6 +1121,60 @@
     }
     .stats-note[hidden] { display: none; }
 
+    /* === 확인 모달 (쿠폰 미사용 경고) === */
+    .confirm-modal-card {
+      max-width: 360px;
+      padding: 26px 22px 20px;
+      text-align: center;
+    }
+    .confirm-modal-title {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      margin-bottom: 12px;
+    }
+    .confirm-modal-message {
+      font-size: 14px;
+      color: var(--text-sub);
+      line-height: 1.6;
+      letter-spacing: -0.2px;
+      margin-bottom: 22px;
+    }
+    .confirm-modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+    .confirm-btn {
+      flex: 1;
+      height: 48px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: inherit;
+      border-radius: 10px;
+      cursor: pointer;
+      letter-spacing: -0.2px;
+      border: none;
+      transition: opacity 0.15s ease, transform 0.05s ease;
+    }
+    .confirm-btn-single {
+      flex: 0 0 auto;
+      min-width: 160px;
+      padding: 0 36px;
+    }
+    .confirm-btn-cancel {
+      background: white;
+      color: var(--text-sub);
+      border: 1.5px solid var(--border);
+    }
+    .confirm-btn-cancel:hover { background: var(--bg); }
+    .confirm-btn-proceed {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+    }
+    .confirm-btn-proceed:hover { opacity: 0.92; }
+    .confirm-btn:active { transform: scale(0.99); }
+
     /* 데스크톱 */
     @media (min-width: 769px) {
       .login-card { padding: 40px 36px; }
@@ -1363,6 +1417,19 @@
           💬 혜택 변경 요청하기
         </a>
         <p class="modal-foot-note">* 처리까지 2~3일 소요될 수 있습니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirmModal" class="modal" hidden>
+    <div class="modal-backdrop"></div>
+    <div class="modal-card confirm-modal-card" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+      <h3 class="confirm-modal-title" id="confirmModalTitle">🎁 쿠폰 사용을 먼저 진행해주세요</h3>
+      <p class="confirm-modal-message">
+        이 라이더님은 사용 가능한 쿠폰이 남아 있어요.<br />보유 쿠폰을 먼저 선택해 주세요.
+      </p>
+      <div class="confirm-modal-actions">
+        <button type="button" id="confirmOkBtn" class="confirm-btn confirm-btn-proceed confirm-btn-single">확인</button>
       </div>
     </div>
   </div>
@@ -1804,6 +1871,24 @@
       const slot = benefitState.selectedCouponSlot;
       if (slot === null) return;
 
+      // 쿠폰 미사용 선택 + 사용 가능한 쿠폰 보유 시 경고 모달
+      if (slot === 'none') {
+        const hasAvailableCoupon = benefitState.availableCoupons.some(c =>
+          (c.status || 'available').toLowerCase() === 'available'
+        );
+        if (hasAvailableCoupon) {
+          document.getElementById('confirmModal').hidden = false;
+          return;
+        }
+      }
+
+      await doProvideBenefit();
+    }
+
+    async function doProvideBenefit() {
+      const slot = benefitState.selectedCouponSlot;
+      if (slot === null) return;
+
       const btn = document.getElementById('benefitSubmitBtn');
       setBtnLoading(btn, true, '처리 중...');
 
@@ -1858,6 +1943,34 @@
     document.getElementById('benefitSubmitBtn').addEventListener('click', handleProvide);
     document.getElementById('completeNextBtn').addEventListener('click', showBenefitStep1);
     document.getElementById('completeDoneBtn').addEventListener('click', showMainScreen);
+
+    // 확인 모달 (쿠폰 사용 유도)
+    const confirmModal = document.getElementById('confirmModal');
+    function closeConfirmModal() { confirmModal.hidden = true; }
+
+    // "혜택 제공 기록" 라디오 선택 해제 → 사장님이 쿠폰을 다시 선택할 수 있게
+    function clearCouponSelection() {
+      benefitState.selectedCouponSlot = null;
+      document.querySelectorAll('#couponList .coupon-card, #couponList .no-coupon-option').forEach(item => {
+        item.classList.remove('selected');
+      });
+      updateProvideButton();
+    }
+
+    document.getElementById('confirmOkBtn').addEventListener('click', () => {
+      closeConfirmModal();
+      clearCouponSelection();
+    });
+    confirmModal.querySelector('.modal-backdrop').addEventListener('click', () => {
+      closeConfirmModal();
+      clearCouponSelection();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !confirmModal.hidden) {
+        closeConfirmModal();
+        clearCouponSelection();
+      }
+    });
 
     const riderInput = document.getElementById('riderNumberInput');
     riderInput.addEventListener('input', (e) => {
