@@ -547,6 +547,260 @@
       color: var(--text-sub);
       margin-bottom: 22px;
     }
+
+    /* ───── 헤더 우상단 CTA 스택 (내 혜택 보기 + 후기 남기기) ───── */
+    .header-cta-stack {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-end;
+      z-index: 5;
+    }
+    .header-cta-stack .header-cta {
+      position: static;
+      top: auto;
+      right: auto;
+    }
+    .header-cta--mint {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 2px 8px rgba(42, 193, 188, 0.4);
+    }
+    .header-cta--mint:active { background: var(--primary-dark); transform: scale(0.97); }
+
+    /* ───── 내 혜택 보기 모달 ───── */
+    .phone-example {
+      font-size: 12.5px;
+      color: var(--text-sub);
+      background: var(--bg);
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      letter-spacing: -0.2px;
+      line-height: 1.5;
+    }
+    .phone-example strong {
+      color: var(--primary-dark);
+      font-weight: 800;
+    }
+    .phone-input {
+      width: 100%;
+      height: 60px;
+      padding: 0 16px;
+      font-size: 24px;
+      font-weight: 700;
+      font-family: inherit;
+      color: var(--text);
+      background: #fafbfc;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      outline: none;
+      text-align: center;
+      letter-spacing: 4px;
+      margin-bottom: 14px;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .phone-input::placeholder {
+      color: #9ca3af;
+      letter-spacing: 4px;
+      font-weight: 600;
+    }
+    .phone-input:focus {
+      border-color: var(--primary);
+      background: white;
+    }
+    .form-error {
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
+      color: #ef4444;
+      background: #fef2f2;
+      border-radius: 8px;
+      letter-spacing: -0.2px;
+      line-height: 1.5;
+    }
+    .form-error[hidden] { display: none; }
+
+    .modal-back {
+      background: transparent;
+      border: none;
+      font-size: 13px;
+      color: var(--text-sub);
+      cursor: pointer;
+      padding: 4px 0;
+      margin-bottom: 8px;
+      font-family: inherit;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+    }
+    .modal-back:hover { color: var(--primary-dark); }
+
+    .rider-id-banner {
+      background: var(--bg);
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 28px;
+      letter-spacing: -0.2px;
+    }
+    .rider-id-banner strong {
+      color: var(--text);
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: -0.3px;
+      margin-left: 2px;
+    }
+
+    .history-section { margin-bottom: 16px; }
+    .history-section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-sub);
+      text-align: center;
+      margin: 18px 0 20px;
+      letter-spacing: -0.2px;
+    }
+
+    .month-block { margin-bottom: 16px; }
+    .month-block:last-child { margin-bottom: 0; }
+    .month-block-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.3px;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1.5px solid var(--border);
+    }
+    .month-block-title .amount-hl {
+      color: var(--primary-dark);
+    }
+
+    .day-list { display: flex; flex-direction: column; gap: 4px; }
+    .day-row {
+      font-size: 13px;
+      color: var(--text);
+      padding: 4px 0;
+      letter-spacing: -0.2px;
+      line-height: 1.5;
+    }
+    .day-row .day-date {
+      display: inline-block;
+      min-width: 60px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .day-row .day-shop { color: var(--text); }
+    .day-row .day-coupon {
+      display: block;
+      margin-left: 60px;
+      font-size: 12px;
+      color: var(--primary-dark);
+      font-weight: 600;
+    }
+    .month-empty {
+      margin-left: 4px;
+      font-size: 12.5px;
+      color: var(--text-sub);
+      padding: 4px 0;
+    }
+
+    .history-note {
+      font-size: 11.5px;
+      color: var(--text-sub);
+      margin-top: 12px;
+      letter-spacing: -0.2px;
+      line-height: 1.5;
+    }
+
+    .coupons-section { margin-top: 32px; }
+    .coupons-section[hidden] { display: none; }
+    .coupons-count {
+      font-size: 13px;
+      color: var(--text);
+      font-weight: 600;
+      margin-bottom: 10px;
+      letter-spacing: -0.2px;
+    }
+    .coupons-count strong {
+      color: var(--primary-dark);
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .my-coupon-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .my-coupon-card {
+      display: flex;
+      align-items: stretch;
+      gap: 12px;
+      background: white;
+      border: 1.5px solid #00AB78;
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .my-coupon-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+      padding: 4px 0;
+      justify-content: center;
+    }
+    .my-coupon-name {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.3px;
+      word-break: keep-all;
+      line-height: 1.35;
+    }
+    .my-coupon-expiry {
+      font-size: 12px;
+      color: var(--text-sub);
+      letter-spacing: -0.2px;
+    }
+    .my-coupon-right {
+      flex: 0 0 38%;
+      min-width: 100px;
+      max-width: 140px;
+      display: flex;
+    }
+    .my-coupon-amount-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 10px 6px;
+      border: 1.5px solid #00AB78;
+      border-radius: 10px;
+      background: #E6F7F2;
+      text-align: center;
+    }
+    .my-coupon-emoji { font-size: 24px; line-height: 1; }
+    .my-coupon-amount-text {
+      font-size: 17px;
+      font-weight: 800;
+      color: #00AB78;
+      letter-spacing: -0.4px;
+      white-space: nowrap;
+      line-height: 1.1;
+    }
+
+    .history-empty-all {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--text-sub);
+      font-size: 14px;
+      letter-spacing: -0.2px;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
@@ -554,7 +808,10 @@
     <header class="header">
       <h1>[배민커넥트] 라이더 전용 식사 배-네핏</h1>
       <p>점심피크 이후, 든든한 한 끼를 혜택 받고 이용해 보세요.</p>
-      <button class="header-cta" id="reviewOpenBtn" type="button">💬 후기 남기기</button>
+      <div class="header-cta-stack">
+        <button class="header-cta header-cta--mint" id="historyOpenBtn" type="button">🎁 내 혜택 보기</button>
+        <button class="header-cta" id="reviewOpenBtn" type="button">💬 후기 남기기</button>
+      </div>
     </header>
 
     <div class="guide-bar" id="guideBar">
@@ -657,6 +914,59 @@
         <div class="success-title">소중한 의견 감사합니다</div>
         <div class="success-msg">더 좋은 혜택으로 보답할게요</div>
         <button type="button" class="modal-ok" id="reviewSuccessOk">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───── 내 혜택 보기 모달 ───── -->
+  <div class="modal-backdrop" id="historyModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="historyModalTitle">
+    <div class="modal-card">
+      <button class="modal-close" id="historyModalClose" aria-label="닫기">✕</button>
+
+      <!-- Step 1: 전화번호 입력 -->
+      <div id="historyStep1View">
+        <div class="modal-title" id="historyModalTitle">🎁 내 혜택 확인</div>
+        <p class="modal-subtitle">휴대폰 번호 뒤 8자리를 입력해 주세요</p>
+        <div class="phone-example">
+          예시: 010-1234-5678 → <strong>12345678</strong>
+        </div>
+        <input
+          type="tel"
+          id="historyPhoneInput"
+          class="phone-input"
+          inputmode="numeric"
+          maxlength="8"
+          placeholder="12345678"
+          autocomplete="off"
+        />
+        <div id="historyStep1Error" class="form-error" hidden></div>
+        <button type="button" id="historyLookupBtn" class="modal-ok">조회하기</button>
+      </div>
+
+      <!-- Step 2: 결과 화면 -->
+      <div id="historyStep2View" hidden>
+        <button type="button" class="modal-back" id="historyBackBtn">← 뒤로 가기</button>
+        <div class="rider-id-banner">
+          라이더: <strong id="historyRiderNum">—</strong>
+        </div>
+
+        <div id="historyEmptyAll" class="history-empty-all" hidden>
+          등록된 이용 내역이 없습니다.
+        </div>
+
+        <div id="historyDataView">
+          <div class="history-section">
+            <h3 class="history-section-title">── 사용 기록 ──</h3>
+            <div id="historyMonthList"></div>
+            <p class="history-note">* %할인을 제공하는 식당은 예상치로 반영되었습니다.</p>
+          </div>
+
+          <div class="coupons-section" id="historyCouponsSection" hidden>
+            <h3 class="history-section-title">── 보유 중인 쿠폰 ──</h3>
+            <p class="coupons-count">이번 달 잔여 쿠폰 <strong id="historyCouponsCount">0</strong>장</p>
+            <div id="historyCouponsList" class="my-coupon-list"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1049,6 +1359,235 @@
         closeModal();
         setTimeout(resetToFormView, 300);   // 닫힘 트랜지션 후 폼 화면으로 복귀
       });
+    })();
+
+    // ---- 내 혜택 보기 모달 ----
+    (function initMyHistory() {
+      const PARTNER_API_URL = 'https://script.google.com/macros/s/AKfycbw-B3DcBCyWgIWU_LOWBvQamPR56Hhi8C0kYrAfS1mTQ_FEz5TEeLgElFlabjeu2_D-zA/exec';
+
+      const openBtn = document.getElementById('historyOpenBtn');
+      const backdrop = document.getElementById('historyModalBackdrop');
+      const closeBtn = document.getElementById('historyModalClose');
+      const backBtn = document.getElementById('historyBackBtn');
+      const lookupBtn = document.getElementById('historyLookupBtn');
+      const phoneInput = document.getElementById('historyPhoneInput');
+      const errorDiv = document.getElementById('historyStep1Error');
+      const step1 = document.getElementById('historyStep1View');
+      const step2 = document.getElementById('historyStep2View');
+      const emptyAll = document.getElementById('historyEmptyAll');
+      const dataView = document.getElementById('historyDataView');
+
+      function openModal() {
+        showStep1();
+        backdrop.classList.add('open');
+        setTimeout(() => phoneInput.focus(), 100);
+      }
+      function closeModal() { backdrop.classList.remove('open'); }
+
+      function showStep1() {
+        step1.hidden = false;
+        step2.hidden = true;
+        phoneInput.value = '';
+        errorDiv.hidden = true;
+        errorDiv.textContent = '';
+        setLookupBtn(false);
+      }
+
+      function setLookupBtn(loading) {
+        if (loading) {
+          lookupBtn.disabled = true;
+          lookupBtn.textContent = '조회 중...';
+        } else {
+          lookupBtn.disabled = false;
+          lookupBtn.textContent = '조회하기';
+        }
+      }
+
+      function formatMoney(amount) {
+        const num = Number(amount);
+        if (!Number.isFinite(num)) return '0원';
+        return num.toLocaleString('ko-KR') + '원';
+      }
+
+      // "2026-05-22" → "5월 22일"
+      function formatDayKor(dateString) {
+        if (!dateString) return '';
+        const m = String(dateString).match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (m) return Number(m[2]) + '월 ' + Number(m[3]) + '일';
+        return String(dateString);
+      }
+
+      async function handleLookup() {
+        const phone8 = phoneInput.value.trim();
+        if (!/^\d{8}$/.test(phone8)) {
+          errorDiv.textContent = '8자리 숫자를 입력해 주세요.';
+          errorDiv.hidden = false;
+          return;
+        }
+        errorDiv.hidden = true;
+        setLookupBtn(true);
+
+        try {
+          const res = await fetch(PARTNER_API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'getMyHistory', riderNumber: phone8 })
+          });
+          const data = await res.json();
+
+          if (data.success) {
+            renderMyHistory(data);
+          } else {
+            errorDiv.textContent = data.message || '조회에 실패했습니다.';
+            errorDiv.hidden = false;
+            setLookupBtn(false);
+          }
+        } catch (err) {
+          console.error('[my-history] lookup failed:', err);
+          errorDiv.textContent = '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.';
+          errorDiv.hidden = false;
+          setLookupBtn(false);
+        }
+      }
+
+      function renderMyHistory(data) {
+        const rider = data.riderNumber || phoneInput.value.trim();
+        document.getElementById('historyRiderNum').textContent = rider;
+
+        const monthlyHistory = Array.isArray(data.monthlyHistory) ? data.monthlyHistory : [];
+        const availableCoupons = Array.isArray(data.availableCoupons) ? data.availableCoupons : [];
+
+        step1.hidden = true;
+        step2.hidden = false;
+
+        // 완전히 비어있는 경우 (등록 안 된 라이더)
+        if (monthlyHistory.length === 0 && availableCoupons.length === 0) {
+          emptyAll.hidden = false;
+          dataView.hidden = true;
+          return;
+        }
+
+        emptyAll.hidden = true;
+        dataView.hidden = false;
+
+        renderMonthlyHistory(monthlyHistory);
+        renderAvailableCoupons(availableCoupons);
+      }
+
+      function renderMonthlyHistory(months) {
+        const container = document.getElementById('historyMonthList');
+        container.innerHTML = '';
+
+        if (!months || months.length === 0) {
+          container.innerHTML = '<div class="month-empty">(이용 내역이 없습니다)</div>';
+          return;
+        }
+
+        // year desc, month desc
+        const sorted = months.slice().sort((a, b) => {
+          if (a.year !== b.year) return b.year - a.year;
+          return b.month - a.month;
+        });
+
+        sorted.forEach(m => {
+          const block = document.createElement('div');
+          block.className = 'month-block';
+
+          const totalCount = m.totalCount || 0;
+          const totalAmount = m.totalAmount || 0;
+          const items = Array.isArray(m.items) ? m.items : [];
+
+          let html = '<div class="month-block-title">' +
+                       esc(m.month) + '월 받으신 혜택: 총 ' + totalCount + '건 · ' +
+                       '<span class="amount-hl">' + esc(formatMoney(totalAmount)) + '</span>' +
+                     '</div>';
+
+          if (items.length === 0) {
+            html += '<div class="month-empty">(이용 내역이 없습니다)</div>';
+          } else {
+            // 일자 내림차순
+            const sortedItems = items.slice().sort((a, b) => {
+              const ad = String(a.date || '');
+              const bd = String(b.date || '');
+              return (ad < bd) ? 1 : (ad > bd ? -1 : 0);
+            });
+
+            html += '<div class="day-list">';
+            sortedItems.forEach(item => {
+              const dateText = formatDayKor(item.date);
+              const shopName = esc(item.shopName || '');
+              const isCoupon = !!item.couponUsed;
+              const couponName = esc(item.couponName || '');
+
+              html += '<div class="day-row">' +
+                        '<span class="day-date">' + esc(dateText) + '</span>' +
+                        '<span class="day-shop">' + shopName + '</span>';
+              if (isCoupon && couponName) {
+                html += '<span class="day-coupon">(' + couponName + ') 사용</span>';
+              }
+              html += '</div>';
+            });
+            html += '</div>';
+          }
+
+          block.innerHTML = html;
+          container.appendChild(block);
+        });
+      }
+
+      function renderAvailableCoupons(coupons) {
+        const section = document.getElementById('historyCouponsSection');
+        const list = document.getElementById('historyCouponsList');
+        const countEl = document.getElementById('historyCouponsCount');
+
+        if (!coupons || coupons.length === 0) {
+          section.hidden = true;
+          return;
+        }
+        section.hidden = false;
+        countEl.textContent = coupons.length;
+
+        list.innerHTML = '';
+        coupons.forEach(c => {
+          const name = c.name || c.couponName || '쿠폰';
+          const amount = formatMoney(c.amount);
+          const expiry = c.validUntil || c.expiry || '';
+
+          const card = document.createElement('div');
+          card.className = 'my-coupon-card';
+          card.innerHTML =
+            '<div class="my-coupon-left">' +
+              '<div class="my-coupon-name">' + esc(name) + '</div>' +
+              (expiry ? '<div class="my-coupon-expiry">유효기간: ' + esc(expiry) + '</div>' : '') +
+            '</div>' +
+            '<div class="my-coupon-right">' +
+              '<div class="my-coupon-amount-box">' +
+                '<div class="my-coupon-emoji">🍚</div>' +
+                '<div class="my-coupon-amount-text">' + esc(amount) + '</div>' +
+              '</div>' +
+            '</div>';
+          list.appendChild(card);
+        });
+      }
+
+      // 이벤트 핸들러
+      openBtn.addEventListener('click', openModal);
+      closeBtn.addEventListener('click', closeModal);
+      backBtn.addEventListener('click', showStep1);
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) closeModal();
+      });
+
+      phoneInput.addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/\D/g, '').slice(0, 8);
+        if (!errorDiv.hidden) errorDiv.hidden = true;
+      });
+      phoneInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleLookup();
+        }
+      });
+      lookupBtn.addEventListener('click', handleLookup);
     })();
 
     function esc(s) {
