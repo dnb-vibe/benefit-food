@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>[배민커넥트] 라이더 전용 식사 배-네핏</title>
+  <style>
+    :root {
+      --primary: #2AC1BC;       /* 배민 민트 */
+      --primary-dark: #1FA39E;
+      --accent: #FF6B35;
+      --text: #1a1a1a;
+      --text-sub: #6b7280;
+      --bg: #f7f8f9;
+      --border: #e5e7eb;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      overflow: hidden;
+    }
+    .app { display: flex; flex-direction: column; height: 100%; }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 14px 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      z-index: 10;
+      flex-shrink: 0;
+    }
+    .header h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; }
+    .header p { font-size: 12px; opacity: 0.92; margin-top: 3px; letter-spacing: -0.2px; }
+
+    .map-wrap { flex: 1; position: relative; }
+    #map { width: 100%; height: 100%; }
+
+    .status {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: white; padding: 12px 20px;
+      border-radius: 999px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      font-size: 13px; color: var(--text-sub);
+      z-index: 100;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .spinner {
+      width: 14px; height: 14px;
+      border: 2px solid var(--bg);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .count-pill {
+      position: absolute; top: 12px; left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 6px 14px;
+      border-radius: 999px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      z-index: 5;
+    }
+    .count-pill b { color: var(--primary-dark); }
+
+    /* 배경 dim */
+    .backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.35);
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 40;
+    }
+    .backdrop.open { opacity: 1; pointer-events: auto; }
+
+    /* 바텀시트 */
+    .sheet {
+      position: fixed; left: 0; right: 0; bottom: 0;
+      background: white;
+      border-radius: 20px 20px 0 0;
+      box-shadow: 0 -6px 24px rgba(0,0,0,0.12);
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+      z-index: 50;
+      max-height: 80vh;
+      display: flex; flex-direction: column;
+    }
+    .sheet.open { transform: translateY(0); }
+
+    /* 데스크톱: 가운데 정렬, 폭 500px 카드 형태 */
+    @media (min-width: 769px) {
+      .sheet {
+        left: 50%;
+        right: auto;
+        width: 500px;
+        max-width: 500px;
+        bottom: 24px;
+        border-radius: 20px;
+        transform: translate(-50%, calc(100% + 24px));
+        max-height: calc(100vh - 48px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+      }
+      .sheet.open { transform: translate(-50%, 0); }
+    }
+
+    .sheet-handle {
+      width: 40px; height: 4px;
+      background: #d1d5db;
+      border-radius: 2px;
+      margin: 10px auto 4px;
+      flex-shrink: 0;
+    }
+    .sheet-close {
+      position: absolute; top: 12px; right: 12px;
+      background: var(--bg); border: none;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      font-size: 16px; cursor: pointer;
+      color: var(--text-sub);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sheet-content {
+      padding: 8px 18px 24px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .r-name {
+      font-size: 20px; font-weight: 800;
+      letter-spacing: -0.4px;
+      padding-right: 36px;
+      margin-bottom: 4px;
+    }
+    .r-loc {
+      font-size: 12px;
+      color: var(--text-sub);
+      line-height: 1.45;
+      word-break: keep-all;
+      margin-bottom: 14px;
+    }
+
+    .badge-row {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+    .badge-time { background: #FFF3E6; color: #D97706; }
+    .badge-discount { background: #E6F9F8; color: var(--primary-dark); }
+
+    .slider {
+      position: relative;
+      margin-bottom: 14px;
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+    .slider-img {
+      width: 100%;
+      aspect-ratio: 5 / 2;   /* 기존 4/3 → 5/2 로 변경 (높이 약 53%로 감소) */
+      object-fit: cover;
+      display: block;
+      background: var(--bg);
+    }
+    .slider-arrow {
+      position: absolute; top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.6);
+      color: white; border: none;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      font-size: 14px; line-height: 1;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+    .slider-arrow:active { background: rgba(0,0,0,0.8); }
+    .slider-arrow.prev { left: 8px; }
+    .slider-arrow.next { right: 8px; }
+    .slider-dots {
+      position: absolute; bottom: 8px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; gap: 6px;
+      padding: 5px 10px;
+      background: rgba(0,0,0,0.45);
+      border-radius: 999px;
+    }
+    .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.55);
+      transition: background 0.2s, transform 0.2s;
+    }
+    .dot.active { background: white; transform: scale(1.15); }
+
+    /* 마커 위 항상 표시되는 식당명 라벨 */
+    .marker-label {
+      position: relative;
+      background: white;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+      transform: translateY(-44px);
+      pointer-events: none;
+    }
+    .marker-label::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -5px;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid white;
+    }
+
+    .menu-block {
+      background: var(--bg);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .menu-label {
+      font-size: 11px;
+      color: var(--text-sub);
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      margin-bottom: 6px;
+    }
+    .menu-name {
+      font-size: 15px; font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .menu-price {
+      font-size: 14px;
+      color: var(--text-sub);
+    }
+
+    .notice {
+      background: #FFF9E6;
+      border-left: 3px solid #F59E0B;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #78350F;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .naver-btn {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%;
+      padding: 14px;
+      background: #03C75A;
+      color: white;
+      text-align: center;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.2px;
+    }
+    .naver-btn:active { background: #02A94B; }
+
+    /* ───── 이용 안내: 접이식 바 ───── */
+    .guide-bar {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      z-index: 9;
+    }
+    .guide-bar-toggle {
+      width: 100%;
+      display: flex; justify-content: space-between; align-items: center;
+      background: #E6F9F8;
+      border: none;
+      padding: 11px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      cursor: pointer;
+      letter-spacing: -0.2px;
+      text-align: left;
+      font-family: inherit;
+    }
+    .guide-bar-toggle:active { background: #D6F2F0; }
+    .guide-chevron {
+      font-size: 14px;
+      transition: transform 0.25s ease;
+      display: inline-block;
+    }
+    .guide-bar.open .guide-chevron { transform: rotate(180deg); }
+    .guide-bar-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+    }
+    .guide-bar.open .guide-bar-content { max-height: 600px; }
+    .guide-body {
+      padding: 14px 18px 18px;
+      background: #F5FBFB;
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text);
+    }
+    .guide-body p { margin-bottom: 8px; }
+    .guide-body .section-title {
+      margin-top: 10px;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+    .guide-body ol {
+      margin: 4px 0 4px 20px;
+      padding: 0;
+    }
+    .guide-body li { margin-bottom: 4px; }
+    .guide-body .closing { margin-top: 10px; font-weight: 600; color: var(--primary-dark); }
+
+    /* ───── 이용 안내: 최초 방문 모달 ───── */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 100;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .modal-backdrop.open { opacity: 1; pointer-events: auto; }
+    .modal-card {
+      background: white;
+      border-radius: 18px;
+      max-width: 420px;
+      width: 100%;
+      padding: 24px 22px 18px;
+      position: relative;
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      transform: scale(0.94);
+      transition: transform 0.25s ease;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    }
+    .modal-backdrop.open .modal-card { transform: scale(1); }
+    .modal-close {
+      position: absolute; top: 12px; right: 12px;
+      background: var(--bg); border: none;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      font-size: 16px; cursor: pointer;
+      color: var(--text-sub);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      padding-right: 36px;
+      letter-spacing: -0.3px;
+    }
+    .modal-body {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--text);
+      margin-bottom: 18px;
+    }
+    .modal-body p { margin-bottom: 8px; }
+    .modal-body .section-title {
+      margin-top: 12px;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+    .modal-body ol { margin: 4px 0 4px 20px; padding: 0; }
+    .modal-body li { margin-bottom: 4px; }
+    .modal-body .closing { margin-top: 12px; font-weight: 600; color: var(--primary-dark); }
+    .modal-ok {
+      width: 100%;
+      padding: 13px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: -0.2px;
+      font-family: inherit;
+    }
+    .modal-ok:active { background: var(--primary-dark); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>[배민커넥트] 라이더 전용 식사 배-네핏</h1>
+      <p>점심피크 이후, 든든한 한 끼를 혜택 받고 이용해 보세요.</p>
+    </header>
+
+    <div class="guide-bar" id="guideBar">
+      <button class="guide-bar-toggle" id="guideToggle" aria-expanded="false" aria-controls="guideContent">
+        <span>📌 이용방법 보기</span>
+        <span class="guide-chevron">⌄</span>
+      </button>
+      <div class="guide-bar-content" id="guideContent">
+        <div class="guide-body">
+          <p>본 혜택은 오늘 배달 1건 이상 수행하신 라이더님께 제공됩니다.</p>
+          <div class="section-title">[이용 방법]</div>
+          <ol>
+            <li>식당별 혜택 시간·메뉴·혜택 내용을 확인하세요</li>
+            <li>원하는 식당에 방문하세요</li>
+            <li>사장님께 배민커넥트 앱의 오늘 배달 내역을 보여주세요</li>
+            <li>주문하고 혜택을 이용하세요</li>
+          </ol>
+          <p class="closing">맛있는 한 끼 되세요!</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="map-wrap">
+      <div id="map"></div>
+      <div class="status" id="status">
+        <div class="spinner"></div>
+        <span id="statusText">데이터 불러오는 중...</span>
+      </div>
+      <div class="count-pill" id="countPill" style="display:none;">
+        <b id="countNum">0</b>개 식당
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="guideModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="guideModalTitle">
+    <div class="modal-card">
+      <button class="modal-close" id="guideModalClose" aria-label="닫기">✕</button>
+      <div class="modal-title" id="guideModalTitle">📢 식사 배-네핏 이용 안내</div>
+      <div class="modal-body">
+        <p>본 혜택은 오늘 배달 1건 이상 수행하신 라이더님께 제공됩니다.</p>
+        <div class="section-title">[이용 방법]</div>
+        <ol>
+          <li>식당별 혜택 시간·메뉴·혜택 내용을 확인하세요</li>
+          <li>원하는 식당에 방문하세요</li>
+          <li>사장님께 배민커넥트 앱의 오늘 배달 내역을 보여주세요</li>
+          <li>주문하고 혜택을 이용하세요</li>
+        </ol>
+        <p class="closing">맛있는 한 끼 되세요!</p>
+      </div>
+      <button class="modal-ok" id="guideModalOk">이해했어요</button>
+    </div>
+  </div>
+
+  <div class="backdrop" id="backdrop"></div>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true">
+    <div class="sheet-handle"></div>
+    <button class="sheet-close" id="sheetClose" aria-label="닫기">✕</button>
+    <div class="sheet-content" id="sheetContent"></div>
+  </div>
+
+  <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=487ae20db913f56842d71ff49a7f522e&libraries=services&autoload=false"></script>
+  <script>
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/1ypIEj2rOnQi4OgpZgR5uhqzhFNfoFOxBYU5KF2-xYjg/export?format=csv&gid=0';
+    const SONGPA_CENTER = { lat: 37.5145, lng: 127.1059 };
+
+    let map, geocoder;
+    let slideState = { items: [], idx: 0 };
+
+    // ---- CSV parser (handles quoted fields with commas/newlines) ----
+    function parseCSV(text) {
+      const rows = [];
+      let row = [], field = '', inQuotes = false;
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+        if (inQuotes) {
+          if (c === '"' && text[i + 1] === '"') { field += '"'; i++; }
+          else if (c === '"') inQuotes = false;
+          else field += c;
+        } else {
+          if (c === '"') inQuotes = true;
+          else if (c === ',') { row.push(field); field = ''; }
+          else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+          else if (c === '\r') { /* skip */ }
+          else field += c;
+        }
+      }
+      if (field.length > 0 || row.length > 0) { row.push(field); rows.push(row); }
+      return rows;
+    }
+
+    function csvToObjects(rows) {
+      if (!rows.length) return [];
+      const header = rows[0].map(h => h.trim());
+      return rows.slice(1)
+        .filter(r => r.some(c => c && c.trim()))
+        .map(r => {
+          const o = {};
+          header.forEach((h, i) => { o[h] = (r[i] || '').trim(); });
+          return o;
+        });
+    }
+
+    // ---- Bootstrap ----
+    kakao.maps.load(async () => {
+      map = new kakao.maps.Map(document.getElementById('map'), {
+        center: new kakao.maps.LatLng(SONGPA_CENTER.lat, SONGPA_CENTER.lng),
+        level: 6
+      });
+      geocoder = new kakao.maps.services.Geocoder();
+
+      try {
+        setStatus('데이터 불러오는 중...', true);
+        console.log('[1] Fetching CSV from:', CSV_URL);
+        const res = await fetch(CSV_URL);
+        console.log('[2] CSV response — ok:', res.ok, 'status:', res.status);
+        if (!res.ok) throw new Error('CSV ' + res.status);
+        const text = await res.text();
+        console.log('[3] CSV raw (first 500 chars):\n' + text.slice(0, 500));
+
+        const rows = parseCSV(text);
+        console.log('[4] Parsed rows count:', rows.length);
+        console.log('[5] Header row:', rows[0]);
+
+        const data = csvToObjects(rows);
+        console.log('[6] Data objects (' + data.length + ' restaurants):', data);
+        if (data.length > 0) {
+          console.log('[7] First row keys:', Object.keys(data[0]));
+          console.log('[8] First row 전체 주소 value:', JSON.stringify(data[0]['전체 주소']));
+        }
+
+        setStatus('지도에 표시 중...', true);
+        const placed = await placeMarkers(data);
+        console.log('[FINAL] Placed markers:', placed, '/', data.length);
+
+        hideStatus();
+        document.getElementById('countPill').style.display = 'block';
+        document.getElementById('countNum').textContent = placed;
+      } catch (e) {
+        console.error('[ERROR]', e);
+        setStatus('데이터를 불러오지 못했어요. ' + e.message, false);
+      }
+    });
+
+    function setStatus(text, spinning) {
+      const el = document.getElementById('status');
+      el.style.display = 'flex';
+      el.querySelector('.spinner').style.display = spinning ? 'block' : 'none';
+      document.getElementById('statusText').textContent = text;
+    }
+    function hideStatus() {
+      document.getElementById('status').style.display = 'none';
+    }
+
+    // ---- Marker placement (with sequential geocoding to avoid throttling) ----
+    function placeMarkers(data) {
+      return new Promise((resolve) => {
+        const bounds = new kakao.maps.LatLngBounds();
+        let placed = 0, i = 0;
+
+        function next() {
+          if (i >= data.length) {
+            if (placed > 0) map.setBounds(bounds);
+            return resolve(placed);
+          }
+          const r = data[i++];
+          const addr = r['전체 주소'];
+          const name = r['식당명'] || '(이름없음)';
+          if (!addr) {
+            console.warn('[geocode] SKIP (전체 주소 비어있음):', name, r);
+            return next();
+          }
+          console.log('[geocode] ' + i + '/' + data.length + ' →', name, '|', addr);
+
+          geocoder.addressSearch(addr, (result, status) => {
+            if (status === kakao.maps.services.Status.OK) {
+              console.log('  ✓ OK:', name, '→ lat', result[0].y, 'lng', result[0].x);
+              const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+              const marker = new kakao.maps.Marker({
+                map, position: coords, title: name
+              });
+              // 마커 위에 항상 보이는 식당명 라벨
+              new kakao.maps.CustomOverlay({
+                map,
+                position: coords,
+                content: '<div class="marker-label">' + esc(name) + '</div>',
+                yAnchor: 1,
+                xAnchor: 0.5,
+                clickable: false
+              });
+              kakao.maps.event.addListener(marker, 'click', () => openSheet(r));
+              bounds.extend(coords);
+              placed++;
+            } else {
+              console.warn('  ✗ FAIL:', name, '|', addr, '| status:', status);
+            }
+            next();
+          });
+        }
+        next();
+      });
+    }
+
+    // ---- Bottom sheet ----
+    function openSheet(r) {
+      const sheet = document.getElementById('sheet');
+      const backdrop = document.getElementById('backdrop');
+      const content = document.getElementById('sheetContent');
+
+      const images = ['매뉴 이미지1', '매뉴 이미지2', '매뉴 이미지3']
+        .map(k => r[k]).filter(s => s && s.trim());
+      slideState = { items: images, idx: 0 };
+
+      content.innerHTML = `
+        <div class="r-name">${esc(r['식당명'] || '')}</div>
+        <div class="r-loc">📍 ${esc(r['전체 주소'] || r['위치'] || '')}</div>
+
+        <div class="badge-row">
+          ${r['혜택 적용 시간'] ? `<span class="badge badge-time">⏰ ${esc(r['혜택 적용 시간'])}</span>` : ''}
+          ${r['라이더 혜택'] ? `<span class="badge badge-discount">🎁 ${esc(r['라이더 혜택'])}</span>` : ''}
+        </div>
+
+        ${images.length > 0 ? `
+          <div class="slider">
+            <img class="slider-img" id="sliderImg" src="${esc(images[0])}" alt="" onerror="this.style.opacity=0.3" />
+            ${images.length > 1 ? `
+              <button class="slider-arrow prev" id="sliderPrev" aria-label="이전">◀</button>
+              <button class="slider-arrow next" id="sliderNext" aria-label="다음">▶</button>
+              <div class="slider-dots" id="sliderDots">
+                ${images.map((_, i) => `<span class="dot ${i === 0 ? 'active' : ''}"></span>`).join('')}
+              </div>
+            ` : ''}
+          </div>
+        ` : ''}
+
+        <div class="menu-block">
+          <div class="menu-label">혜택 메뉴</div>
+          <div class="menu-name">${esc(r['혜택 메뉴'] || '-')}</div>
+          ${r['가격'] ? `<div class="menu-price">${esc(r['가격'])}</div>` : ''}
+        </div>
+
+        ${r['안내'] ? `<div class="notice">📌 ${esc(r['안내'])}</div>` : ''}
+
+        ${r['지도 링크'] ? `<a class="naver-btn" href="${esc(r['지도 링크'])}" target="_blank" rel="noopener">네이버 지도에서 보기</a>` : ''}
+      `;
+
+      if (images.length > 1) {
+        document.getElementById('sliderPrev').addEventListener('click', () => slide(-1));
+        document.getElementById('sliderNext').addEventListener('click', () => slide(1));
+      }
+
+      sheet.classList.add('open');
+      backdrop.classList.add('open');
+    }
+
+    function slide(delta) {
+      const { items } = slideState;
+      if (!items.length) return;
+      slideState.idx = (slideState.idx + delta + items.length) % items.length;
+      const img = document.getElementById('sliderImg');
+      if (img) img.src = slideState.items[slideState.idx];
+      document.querySelectorAll('#sliderDots .dot').forEach((d, i) => {
+        d.classList.toggle('active', i === slideState.idx);
+      });
+    }
+
+    function closeSheet() {
+      document.getElementById('sheet').classList.remove('open');
+      document.getElementById('backdrop').classList.remove('open');
+    }
+    document.getElementById('sheetClose').addEventListener('click', closeSheet);
+    document.getElementById('backdrop').addEventListener('click', closeSheet);
+
+    // ---- 이용 안내: 첫 방문 모달 + 접이식 바 ----
+    (function initGuide() {
+      const KEY = 'beneft_guide_seen';
+      const backdrop = document.getElementById('guideModalBackdrop');
+      const bar = document.getElementById('guideBar');
+      const toggle = document.getElementById('guideToggle');
+
+      // 첫 방문이면 자동으로 모달 노출
+      let seen = false;
+      try { seen = !!localStorage.getItem(KEY); } catch (_) {}
+      if (!seen) {
+        requestAnimationFrame(() => backdrop.classList.add('open'));
+      }
+
+      function closeModal() {
+        backdrop.classList.remove('open');
+        try { localStorage.setItem(KEY, '1'); } catch (_) {}
+      }
+
+      document.getElementById('guideModalClose').addEventListener('click', closeModal);
+      document.getElementById('guideModalOk').addEventListener('click', closeModal);
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) closeModal();   // 카드 내부 클릭은 무시
+      });
+
+      // 접이식 바 토글
+      toggle.addEventListener('click', () => {
+        const opened = bar.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', opened);
+      });
+    })();
+
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[c]));
+    }
+  </script>
+</body>
+</html>
