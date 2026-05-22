@@ -1147,7 +1147,8 @@
         <div class="feature-title">주요 기능</div>
         <ul class="feature-list">
           <li>우리 가게 라이더향 혜택 조회</li>
-          <li>라이더 방문 시 혜택 조회 및 사용 처리</li>
+          <!-- 파일럿 단계: 쿠폰 기능 비활성화 관련 문구 -->
+          <li>라이더 방문 시 이용 처리</li>
           <li>최근 3개월 이용 내역 통계</li>
         </ul>
       </div>
@@ -1660,7 +1661,8 @@
       const availableCount = coupons.filter(c => (c.status || 'available').toLowerCase() === 'available').length;
 
       if (totalCount === 0) {
-        guide.textContent = '사용 가능한 쿠폰이 없습니다';
+        // 파일럿 단계: 쿠폰 기능 비활성화 관련 문구
+        guide.textContent = '본 화면에서 혜택 제공을 기록하고, 통계 화면에서 확인하세요.';
       } else if (availableCount === 0) {
         guide.innerHTML = '사용 가능한 쿠폰이 없습니다 <span class="coupon-info-sub">(보유 쿠폰 ' + totalCount + '개)</span>';
       } else {
@@ -1733,9 +1735,10 @@
       const noCoupon = document.createElement('div');
       noCoupon.className = 'no-coupon-option';
       noCoupon.dataset.slot = 'none';
+      // 파일럿 단계: 쿠폰 기능 비활성화 관련 문구
       noCoupon.innerHTML =
         '<div class="coupon-card-radio"></div>' +
-        '<span class="no-coupon-label">쿠폰 없이 방문만 기록</span>';
+        '<span class="no-coupon-label">혜택 제공 기록</span>';
       noCoupon.addEventListener('click', () => selectCoupon('none'));
       list.appendChild(noCoupon);
     }
