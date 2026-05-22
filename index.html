@@ -407,6 +407,151 @@
       font-family: inherit;
     }
     .modal-ok:active { background: var(--primary-dark); }
+
+    /* ───── 헤더 우상단 CTA 버튼 ───── */
+    .header { position: relative; padding-right: 110px; }
+    .header-cta {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(255,255,255,0.95);
+      color: var(--primary-dark);
+      border: none;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+      font-family: inherit;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+    }
+    .header-cta:active { background: white; transform: scale(0.97); }
+    @media (max-width: 380px) {
+      .header { padding-right: 96px; }
+      .header h1 { font-size: 16px; }
+      .header p { font-size: 11px; }
+      .header-cta { padding: 7px 10px; font-size: 11px; }
+    }
+
+    /* ───── 후기 폼 ───── */
+    .modal-subtitle {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin: -8px 0 16px;
+      line-height: 1.5;
+      padding-right: 36px;
+    }
+    .form-field { margin-bottom: 14px; }
+    .form-field > label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+    .form-field .req { color: #EF4444; margin-left: 2px; }
+    .form-field .helper {
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+      margin-top: -2px;
+    }
+    .rating-group { display: flex; gap: 7px; }
+    .rating-btn {
+      flex: 1;
+      height: 44px;
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-sub);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s ease;
+    }
+    .rating-btn:active { transform: scale(0.94); }
+    .rating-btn.selected {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px rgba(42,193,188,0.35);
+    }
+    .form-field select, .form-field textarea {
+      width: 100%;
+      font-family: inherit;
+      font-size: 14px;
+      padding: 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: white;
+      color: var(--text);
+      -webkit-appearance: none;
+      appearance: none;
+      box-sizing: border-box;
+    }
+    .form-field select {
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b7280'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      padding-right: 32px;
+    }
+    .form-field select:focus, .form-field textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .form-field textarea {
+      resize: vertical;
+      min-height: 90px;
+      line-height: 1.5;
+    }
+    .char-count {
+      text-align: right;
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-top: 4px;
+    }
+    .form-error {
+      background: #FEF2F2;
+      color: #B91C1C;
+      font-size: 13px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+    .modal-ok:disabled {
+      background: #B5E6E4;
+      cursor: not-allowed;
+    }
+
+    /* ───── 후기 제출 성공 화면 ───── */
+    .success-view { text-align: center; padding: 8px 4px 4px; }
+    .success-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      font-size: 34px;
+      font-weight: 800;
+    }
+    .success-title {
+      font-size: 17px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+    .success-msg {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 22px;
+    }
   </style>
 </head>
 <body>
@@ -414,6 +559,7 @@
     <header class="header">
       <h1>[배민커넥트] 라이더 전용 식사 배-네핏</h1>
       <p>점심피크 이후, 든든한 한 끼를 혜택 받고 이용해 보세요.</p>
+      <button class="header-cta" id="reviewOpenBtn" type="button">💬 후기 남기기</button>
     </header>
 
     <div class="guide-bar" id="guideBar">
@@ -464,6 +610,59 @@
         <p class="closing">맛있는 한 끼 되세요!</p>
       </div>
       <button class="modal-ok" id="guideModalOk">이해했어요</button>
+    </div>
+  </div>
+
+  <!-- ───── 라이더 후기 작성 모달 ───── -->
+  <div class="modal-backdrop" id="reviewModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle">
+    <div class="modal-card">
+      <button class="modal-close" id="reviewModalClose" aria-label="닫기">✕</button>
+
+      <!-- 작성 화면 -->
+      <div id="reviewFormView">
+        <div class="modal-title" id="reviewModalTitle">💬 라이더 후기 남기기</div>
+        <div class="modal-subtitle">소중한 의견은 더 좋은 혜택을 만드는 데 사용됩니다</div>
+
+        <form id="reviewForm" novalidate>
+          <div class="form-field">
+            <label for="reviewRestaurant">방문하신 식당<span class="req">*</span></label>
+            <select id="reviewRestaurant" required>
+              <option value="">식당을 선택해주세요</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label>만족도<span class="req">*</span></label>
+            <div class="helper">1점(매우 불만족) ~ 5점(매우 만족)</div>
+            <div class="rating-group" id="ratingGroup" role="radiogroup" aria-label="만족도">
+              <button type="button" class="rating-btn" data-val="1" aria-label="1점">1</button>
+              <button type="button" class="rating-btn" data-val="2" aria-label="2점">2</button>
+              <button type="button" class="rating-btn" data-val="3" aria-label="3점">3</button>
+              <button type="button" class="rating-btn" data-val="4" aria-label="4점">4</button>
+              <button type="button" class="rating-btn" data-val="5" aria-label="5점">5</button>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="reviewText">자유 의견</label>
+            <textarea id="reviewText" maxlength="500" rows="4"
+              placeholder="사장님 응대, 매장 분위기, 메뉴 만족도 등 자유롭게 남겨주세요"></textarea>
+            <div class="char-count"><span id="reviewCharCount">0</span>/500</div>
+          </div>
+
+          <div class="form-error" id="reviewFormError" style="display:none;"></div>
+
+          <button type="submit" class="modal-ok" id="reviewSubmitBtn">후기 보내기</button>
+        </form>
+      </div>
+
+      <!-- 제출 완료 화면 -->
+      <div id="reviewSuccessView" class="success-view" style="display:none;">
+        <div class="success-icon">✓</div>
+        <div class="success-title">소중한 의견 감사합니다</div>
+        <div class="success-msg">더 좋은 혜택으로 보답할게요</div>
+        <button type="button" class="modal-ok" id="reviewSuccessOk">확인</button>
+      </div>
     </div>
   </div>
 
@@ -538,6 +737,7 @@
         console.log('[5] Header row:', rows[0]);
 
         const data = csvToObjects(rows);
+        window.__restaurants = data;   // 후기 모달 드롭다운에서 재사용
         console.log('[6] Data objects (' + data.length + ' restaurants):', data);
         if (data.length > 0) {
           console.log('[7] First row keys:', Object.keys(data[0]));
@@ -715,6 +915,144 @@
       toggle.addEventListener('click', () => {
         const opened = bar.classList.toggle('open');
         toggle.setAttribute('aria-expanded', opened);
+      });
+    })();
+
+    // ---- 라이더 후기 작성 모달 ----
+    (function initReview() {
+      const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzT63ao_ZoGNfoZso9Atb6EIJ14niTQeVPe4tqN1WsStTQ6RIpGYv2RatC6-RRhIf2r2Q/exec';
+
+      const openBtn = document.getElementById('reviewOpenBtn');
+      const backdrop = document.getElementById('reviewModalBackdrop');
+      const closeBtn = document.getElementById('reviewModalClose');
+      const form = document.getElementById('reviewForm');
+      const submitBtn = document.getElementById('reviewSubmitBtn');
+      const ratingGroup = document.getElementById('ratingGroup');
+      const restaurantSel = document.getElementById('reviewRestaurant');
+      const reviewText = document.getElementById('reviewText');
+      const charCount = document.getElementById('reviewCharCount');
+      const formView = document.getElementById('reviewFormView');
+      const successView = document.getElementById('reviewSuccessView');
+      const successOk = document.getElementById('reviewSuccessOk');
+      const formError = document.getElementById('reviewFormError');
+
+      let selectedRating = null;
+
+      function populateRestaurants() {
+        // 첫 옵션(placeholder) 유지하고 나머지 제거
+        while (restaurantSel.options.length > 1) restaurantSel.remove(1);
+        const list = window.__restaurants || [];
+        if (list.length === 0) {
+          const opt = document.createElement('option');
+          opt.value = '';
+          opt.disabled = true;
+          opt.textContent = '데이터 로딩 중… 잠시 후 다시 시도해주세요';
+          restaurantSel.appendChild(opt);
+          return;
+        }
+        list.forEach(r => {
+          const name = r['식당명'];
+          if (!name) return;
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          restaurantSel.appendChild(opt);
+        });
+      }
+
+      function showError(msg) {
+        formError.textContent = msg;
+        formError.style.display = 'block';
+      }
+      function hideError() { formError.style.display = 'none'; }
+
+      function openModal() {
+        populateRestaurants();
+        backdrop.classList.add('open');
+      }
+      function closeModal() { backdrop.classList.remove('open'); }
+
+      function resetToFormView() {
+        formView.style.display = '';
+        successView.style.display = 'none';
+        submitBtn.disabled = false;
+        submitBtn.textContent = '후기 보내기';
+        hideError();
+      }
+      function clearForm() {
+        restaurantSel.value = '';
+        selectedRating = null;
+        Array.from(ratingGroup.children).forEach(b => b.classList.remove('selected'));
+        reviewText.value = '';
+        charCount.textContent = '0';
+      }
+
+      openBtn.addEventListener('click', openModal);
+      closeBtn.addEventListener('click', closeModal);
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) closeModal();
+      });
+
+      // 만족도 버튼
+      ratingGroup.addEventListener('click', (e) => {
+        const btn = e.target.closest('.rating-btn');
+        if (!btn) return;
+        selectedRating = btn.dataset.val;
+        Array.from(ratingGroup.children).forEach(x => {
+          x.classList.toggle('selected', x === btn);
+          x.setAttribute('aria-checked', x === btn);
+        });
+        hideError();
+      });
+
+      // 글자 수 카운트
+      reviewText.addEventListener('input', () => {
+        charCount.textContent = reviewText.value.length;
+      });
+
+      // 폼 제출
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideError();
+
+        if (!restaurantSel.value || !selectedRating) {
+          showError('식당과 만족도를 선택해주세요');
+          return;
+        }
+
+        const payload = {
+          restaurant: restaurantSel.value,
+          rating: selectedRating,
+          review: reviewText.value.trim()
+        };
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = '전송 중...';
+
+        try {
+          await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          // no-cors → 응답 확인 불가, 예외가 안 나면 성공으로 처리
+          console.log('[review] submitted:', payload);
+          formView.style.display = 'none';
+          successView.style.display = '';
+          clearForm();
+        } catch (err) {
+          console.error('[review] submit failed:', err);
+          showError('전송에 실패했어요. 잠시 후 다시 시도해주세요');
+          submitBtn.disabled = false;
+          submitBtn.textContent = '후기 보내기';
+        }
+      });
+
+      // 성공 → 확인
+      successOk.addEventListener('click', () => {
+        closeModal();
+        setTimeout(resetToFormView, 300);   // 닫힘 트랜지션 후 폼 화면으로 복귀
       });
     })();
 
