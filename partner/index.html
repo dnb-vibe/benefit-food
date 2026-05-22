@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>🏪 파트너 배-네핏 어드민</title>
+  <style>
+    :root {
+      --primary: #2AC1BC;       /* 배민 민트 */
+      --primary-dark: #1FA39E;
+      --accent: #FF6B35;
+      --text: #1a1a1a;
+      --text-sub: #6b7280;
+      --text-muted: #9ca3af;
+      --bg: #f7f8f9;
+      --border: #e5e7eb;
+      --error: #ef4444;
+      --error-bg: #fef2f2;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "맑은 고딕", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      min-height: 100vh;
+    }
+
+    .screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .screen[hidden] { display: none; }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 18px 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      flex-shrink: 0;
+    }
+    .header-inner {
+      max-width: 480px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+    }
+    .header-sub {
+      font-size: 13px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-top: 5px;
+      letter-spacing: -0.2px;
+    }
+    .header p {
+      font-size: 13px;
+      opacity: 0.92;
+      margin-top: 4px;
+      letter-spacing: -0.2px;
+    }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 20px 16px;
+      gap: 16px;
+    }
+
+    .intro {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .notice-box {
+      background: #fff7ed;
+      border-left: 4px solid #f59e0b;
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .notice-label {
+      display: inline-block;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #b45309;
+      background: #fde68a;
+      padding: 3px 8px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+      letter-spacing: -0.2px;
+    }
+    .notice-box p {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #78350f;
+      line-height: 1.6;
+      letter-spacing: -0.2px;
+    }
+
+    .feature-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .feature-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+    }
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .feature-list li {
+      font-size: 13.5px;
+      color: var(--text);
+      padding-left: 18px;
+      position: relative;
+      line-height: 1.75;
+      letter-spacing: -0.2px;
+    }
+    .feature-list li::before {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 10px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      padding: 32px 28px;
+    }
+
+    .login-card h2 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 6px;
+    }
+    .login-card .subtitle {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 24px;
+      letter-spacing: -0.2px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 52px;
+      padding: 0 16px;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--text);
+      background: #fafbfc;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.15s ease, background 0.15s ease;
+      letter-spacing: -0.2px;
+    }
+    .form-input::placeholder { color: var(--text-muted); }
+    .form-input:focus {
+      border-color: var(--primary);
+      background: white;
+    }
+
+    .error-msg {
+      display: none;
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--error);
+      background: var(--error-bg);
+      border-radius: 8px;
+      letter-spacing: -0.2px;
+    }
+    .error-msg.show { display: block; }
+
+    .btn-login {
+      width: 100%;
+      height: 52px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      color: white;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      letter-spacing: -0.2px;
+      transition: opacity 0.15s ease, transform 0.05s ease;
+      margin-top: 6px;
+    }
+    .btn-login:hover:not(:disabled) { opacity: 0.92; }
+    .btn-login:active:not(:disabled) { transform: scale(0.99); }
+    .btn-login:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-login .spinner {
+      display: none;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    .btn-login.loading .spinner { display: inline-block; }
+    .btn-login.loading .btn-text::before { content: "로그인 중..."; }
+    .btn-login.loading .btn-text-default { display: none; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .footer {
+      padding: 8px 20px 32px;
+      text-align: center;
+    }
+    .footer-inner {
+      max-width: 420px;
+      margin: 0 auto;
+      font-size: 12.5px;
+      color: var(--text-sub);
+      line-height: 1.6;
+      letter-spacing: -0.2px;
+    }
+    .footer-inner p {
+      margin-bottom: 12px;
+    }
+
+    .btn-kakao {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 48px;
+      padding: 0 22px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: inherit;
+      color: #3C1E1E;
+      background: #FEE500;
+      border-radius: 10px;
+      text-decoration: none;
+      letter-spacing: -0.2px;
+      box-shadow: 0 2px 6px rgba(254, 229, 0, 0.35);
+      transition: opacity 0.15s ease, transform 0.05s ease;
+    }
+    .btn-kakao:hover { opacity: 0.92; }
+    .btn-kakao:active { transform: scale(0.99); }
+
+    /* === 메인 화면 === */
+    .main-header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      text-align: left;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .welcome {
+      font-size: 14px;
+      color: white;
+      letter-spacing: -0.2px;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .welcome strong {
+      font-weight: 800;
+    }
+    .btn-logout {
+      flex-shrink: 0;
+      height: 30px;
+      padding: 0 12px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      color: white;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.05s ease;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,0.28); }
+    .btn-logout:active { transform: scale(0.96); }
+
+    .dashboard {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 20px 16px 28px;
+      max-width: 520px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .dash-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      padding: 20px 18px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .dash-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+    }
+
+    .dash-card-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .dash-icon {
+      font-size: 22px;
+      line-height: 1;
+    }
+    .dash-card-head h3 {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .dash-card-body {
+      margin-bottom: 14px;
+    }
+    .dash-card-body p {
+      font-size: 13.5px;
+      color: var(--text-sub);
+      line-height: 1.6;
+      letter-spacing: -0.2px;
+    }
+
+    .benefit-preview {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .benefit-preview > div {
+      display: flex;
+      gap: 10px;
+      font-size: 13.5px;
+      align-items: baseline;
+      letter-spacing: -0.2px;
+    }
+    .benefit-preview dt {
+      color: var(--text-sub);
+      font-weight: 600;
+      min-width: 70px;
+      flex-shrink: 0;
+    }
+    .benefit-preview dd {
+      color: var(--text);
+      font-weight: 700;
+    }
+    .benefit-preview dd.loading {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .benefit-error {
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--error);
+      text-align: center;
+      background: var(--error-bg);
+      border-radius: 8px;
+      letter-spacing: -0.2px;
+      line-height: 1.55;
+    }
+    .benefit-error[hidden] { display: none; }
+
+    .dash-btn {
+      width: 100%;
+      height: 46px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: inherit;
+      color: white;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      letter-spacing: -0.2px;
+      transition: opacity 0.15s ease, transform 0.05s ease;
+    }
+    .dash-btn:hover { opacity: 0.92; }
+    .dash-btn:active { transform: scale(0.99); }
+
+    /* === 모달 === */
+    .modal[hidden] { display: none; }
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      animation: fadeIn 0.18s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-card {
+      position: relative;
+      background: white;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 440px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 24px 22px 22px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+      animation: popIn 0.2s ease;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      font-size: 16px;
+      color: var(--text-sub);
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s ease;
+    }
+    .modal-close:hover { background: var(--bg); }
+    .modal-title {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      margin-bottom: 18px;
+      padding-right: 32px;
+    }
+
+    .detail-list {
+      margin-bottom: 20px;
+    }
+    .detail-list > div {
+      display: flex;
+      gap: 12px;
+      font-size: 13.5px;
+      align-items: baseline;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .detail-list > div:last-child { border-bottom: none; }
+    .detail-list dt {
+      color: var(--text-sub);
+      font-weight: 600;
+      min-width: 72px;
+      flex-shrink: 0;
+      letter-spacing: -0.2px;
+    }
+    .detail-list dd {
+      color: var(--text);
+      font-weight: 600;
+      flex: 1;
+      letter-spacing: -0.2px;
+      line-height: 1.55;
+      word-break: keep-all;
+    }
+
+    .modal-footer { text-align: center; }
+    .btn-change {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      height: 48px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: inherit;
+      color: #191919;
+      background: #FEE500;
+      border-radius: 10px;
+      text-decoration: none;
+      letter-spacing: -0.2px;
+      box-shadow: 0 2px 6px rgba(254, 229, 0, 0.35);
+      transition: opacity 0.15s ease, transform 0.05s ease;
+    }
+    .btn-change:hover { opacity: 0.92; }
+    .btn-change:active { transform: scale(0.99); }
+    .modal-foot-note {
+      margin-top: 8px;
+      font-size: 11.5px;
+      color: var(--text-sub);
+      letter-spacing: -0.2px;
+    }
+
+    /* === 혜택 제공 단계 화면 === */
+    .step-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      max-width: 520px;
+      margin: 0 auto;
+      text-align: left;
+    }
+    .btn-back {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255,255,255,0.18);
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s ease;
+    }
+    .btn-back:hover { background: rgba(255,255,255,0.28); }
+    .step-title {
+      flex: 1;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .step-spacer { width: 32px; flex-shrink: 0; }
+
+    .step-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 16px 28px;
+    }
+    .step-card {
+      width: 100%;
+      max-width: 480px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      padding: 28px 22px;
+    }
+    .step-guide {
+      font-size: 14px;
+      color: var(--text-sub);
+      text-align: center;
+      margin-bottom: 20px;
+      letter-spacing: -0.2px;
+      line-height: 1.6;
+    }
+
+    .rider-input {
+      width: 100%;
+      height: 64px;
+      padding: 0 16px;
+      font-size: 26px;
+      font-weight: 700;
+      font-family: inherit;
+      color: var(--text);
+      background: #fafbfc;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      outline: none;
+      text-align: center;
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .rider-input::placeholder {
+      color: var(--text-muted);
+      letter-spacing: 4px;
+      font-weight: 600;
+    }
+    .rider-input:focus {
+      border-color: var(--primary);
+      background: white;
+    }
+
+    .step-btn {
+      width: 100%;
+      height: 56px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: inherit;
+      color: white;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      letter-spacing: -0.2px;
+      margin-top: 6px;
+      transition: opacity 0.15s ease, transform 0.05s ease;
+    }
+    .step-btn:hover:not(:disabled) { opacity: 0.92; }
+    .step-btn:active:not(:disabled) { transform: scale(0.99); }
+    .step-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .step-btn.btn-secondary {
+      background: white;
+      color: var(--text-sub);
+      border: 1.5px solid var(--border);
+    }
+    .step-btn.btn-secondary:hover:not(:disabled) {
+      background: var(--bg);
+      opacity: 1;
+    }
+
+    .coupon-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .step-guide strong {
+      color: #00AB78;
+      font-weight: 800;
+    }
+    .coupon-info-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: -0.1px;
+    }
+
+    .coupon-card {
+      display: flex;
+      align-items: stretch;
+      gap: 12px;
+      position: relative;
+      background: white;
+      border: 1.5px solid #00AB78;
+      border-radius: 12px;
+      padding: 14px;
+      cursor: pointer;
+      transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
+    }
+    .coupon-card:hover:not(.disabled) {
+      background: #f0fdf6;
+      box-shadow: 0 4px 14px rgba(0, 171, 120, 0.14);
+    }
+    .coupon-card:active:not(.disabled) { transform: scale(0.995); }
+    .coupon-card.selected {
+      background: #e8f9f0;
+      box-shadow: 0 0 0 3px rgba(0, 171, 120, 0.22);
+    }
+
+    .coupon-card-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+      padding: 2px 0;
+    }
+    .coupon-card-right {
+      flex: 0 0 38%;
+      min-width: 108px;
+      max-width: 150px;
+      display: flex;
+      align-items: stretch;
+    }
+
+    .amount-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 8px;
+      border: 1.5px solid #00AB78;
+      border-radius: 10px;
+      background: #E6F7F2;
+      text-align: center;
+    }
+    .amount-emoji {
+      font-size: 26px;
+      line-height: 1;
+    }
+    .amount-text {
+      font-size: 19px;
+      font-weight: 800;
+      color: #00AB78;
+      letter-spacing: -0.5px;
+      white-space: nowrap;
+      line-height: 1.1;
+    }
+    .amount-status {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #555;
+      background: #d8d8d8;
+      padding: 3px 9px;
+      border-radius: 999px;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+    }
+    .amount-status.expired-status {
+      background: #fde2e2;
+      color: #b03434;
+    }
+
+    .coupon-card .name-line {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.3px;
+      word-break: keep-all;
+      line-height: 1.35;
+    }
+    .coupon-card .expiry-line {
+      font-size: 13px;
+      color: #666;
+      letter-spacing: -0.2px;
+    }
+    .coupon-card .used-date-line {
+      font-size: 12px;
+      color: #999;
+      letter-spacing: -0.2px;
+    }
+
+    .coupon-card-select {
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .coupon-card-select-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-sub);
+      letter-spacing: -0.2px;
+    }
+    .coupon-card-radio {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #cbd5d5;
+      border-radius: 50%;
+      background: white;
+      flex-shrink: 0;
+      position: relative;
+      transition: border-color 0.15s ease;
+    }
+    .coupon-card.selected .coupon-card-radio { border-color: #00AB78; }
+    .coupon-card.selected .coupon-card-radio::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: 50%;
+      background: #00AB78;
+    }
+    .coupon-card.selected .coupon-card-select-label {
+      color: #00AB78;
+      font-weight: 700;
+    }
+
+    .coupon-card.disabled {
+      background: #F0F0F0;
+      border-color: #d4d4d4;
+      cursor: not-allowed;
+    }
+    .coupon-card.disabled .name-line,
+    .coupon-card.disabled .expiry-line {
+      color: #999;
+    }
+    .coupon-card.disabled .amount-box {
+      background: #e8e8e8;
+      border-color: #c8c8c8;
+    }
+    .coupon-card.disabled .amount-text {
+      color: #999;
+    }
+
+    .no-coupon-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      border: 1.5px dashed var(--border);
+      border-radius: 10px;
+      background: #fafbfc;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .no-coupon-option:hover { border-color: var(--primary); }
+    .no-coupon-option.selected {
+      border-color: var(--primary);
+      border-style: solid;
+      background: #f0fdfa;
+    }
+    .no-coupon-option.selected .coupon-card-radio { border-color: var(--primary); }
+    .no-coupon-option.selected .coupon-card-radio::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+    .no-coupon-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-sub);
+      letter-spacing: -0.2px;
+    }
+    .no-coupon-option.selected .no-coupon-label {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    /* Step 3: 완료 화면 */
+    .step-complete { justify-content: center; }
+    .complete-card {
+      text-align: center;
+      padding: 36px 24px 28px;
+    }
+    .complete-check {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      font-size: 36px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 18px;
+      box-shadow: 0 6px 20px rgba(42, 193, 188, 0.35);
+      animation: popIn 0.3s ease;
+    }
+    .complete-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      margin-bottom: 10px;
+    }
+    .complete-message {
+      font-size: 14px;
+      color: var(--text-sub);
+      line-height: 1.6;
+      letter-spacing: -0.2px;
+      margin-bottom: 22px;
+    }
+    .complete-detail {
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 22px;
+      text-align: left;
+    }
+    .complete-detail > div {
+      display: flex;
+      gap: 10px;
+      font-size: 13px;
+      padding: 4px 0;
+      letter-spacing: -0.2px;
+    }
+    .complete-detail dt {
+      color: var(--text-sub);
+      font-weight: 600;
+      min-width: 72px;
+      flex-shrink: 0;
+    }
+    .complete-detail dd {
+      color: var(--text);
+      font-weight: 700;
+      flex: 1;
+      word-break: break-all;
+    }
+    .complete-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* === 이용 현황 화면 === */
+    .stats-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 12px 16px 24px;
+      max-width: 560px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .stats-shop-banner {
+      font-size: 14px;
+      color: var(--text-sub);
+      text-align: center;
+      padding: 8px 0 14px;
+      letter-spacing: -0.2px;
+    }
+    .stats-shop-banner strong {
+      color: var(--primary-dark);
+      font-weight: 800;
+    }
+
+    .stats-loading {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 40px 20px;
+      color: var(--text-sub);
+      font-size: 14px;
+      letter-spacing: -0.2px;
+    }
+    .stats-loading[hidden] { display: none; }
+    .stats-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .stats-error {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    .stats-error[hidden] { display: none; }
+    .stats-error p {
+      color: var(--error);
+      font-size: 14px;
+      line-height: 1.6;
+      letter-spacing: -0.2px;
+    }
+    .stats-error .step-btn { max-width: 220px; }
+
+    .stats-content[hidden] { display: none; }
+
+    .stats-empty-all {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--text-sub);
+      font-size: 14px;
+      letter-spacing: -0.2px;
+      line-height: 1.6;
+    }
+
+    .month-section { margin-bottom: 24px; }
+    .month-section:last-of-type { margin-bottom: 12px; }
+
+    .month-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      padding: 0 4px;
+    }
+    .month-title {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: var(--text);
+    }
+    .month-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      background: #E6F7F2;
+      border: 1px solid #b4e2d6;
+      padding: 2px 8px;
+      border-radius: 999px;
+      letter-spacing: -0.2px;
+    }
+
+    .month-summary {
+      display: flex;
+      gap: 6px;
+      background: #E6F7F2;
+      border: 1px solid #c9eadf;
+      border-radius: 12px;
+      padding: 14px 10px;
+      margin-bottom: 10px;
+    }
+    .month-summary-item {
+      flex: 1;
+      text-align: center;
+      padding: 2px 4px;
+      min-width: 0;
+    }
+    .month-summary-item + .month-summary-item {
+      border-left: 1px solid rgba(0, 171, 120, 0.18);
+    }
+    .month-summary-label {
+      display: block;
+      font-size: 11.5px;
+      color: var(--text-sub);
+      margin-bottom: 4px;
+      letter-spacing: -0.2px;
+    }
+    .month-summary-value {
+      display: block;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--primary-dark);
+      letter-spacing: -0.3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .month-empty {
+      padding: 18px;
+      text-align: center;
+      color: var(--text-sub);
+      font-size: 13px;
+      background: #fafbfc;
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      letter-spacing: -0.2px;
+    }
+
+    .daily-list {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .daily-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      font-size: 13px;
+      letter-spacing: -0.2px;
+    }
+    .daily-row + .daily-row {
+      border-top: 1px solid var(--border);
+    }
+    .daily-date {
+      flex: 0 0 auto;
+      font-weight: 700;
+      color: var(--text);
+      min-width: 74px;
+    }
+    .daily-counts {
+      flex: 1;
+      color: var(--text-sub);
+      font-size: 12.5px;
+      min-width: 0;
+    }
+    .daily-counts span + span { margin-left: 8px; }
+    .daily-amount {
+      flex: 0 0 auto;
+      color: var(--primary-dark);
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+    }
+
+    .stats-note {
+      margin-top: 18px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      text-align: center;
+      letter-spacing: -0.2px;
+    }
+    .stats-note[hidden] { display: none; }
+
+    /* 데스크톱 */
+    @media (min-width: 769px) {
+      .login-card { padding: 40px 36px; }
+      .login-card h2 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="loginScreen" class="screen">
+  <header class="header">
+    <div class="header-inner">
+      <h1>[배민커넥트] 라이더 전용 식사 배-네핏</h1>
+      <div class="header-sub">파트너 어드민</div>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="intro">
+      <div class="notice-box">
+        <span class="notice-label">중요 안내</span>
+        <p>본 혜택은 오늘 배달 1건 이상 수행하신 라이더님께 제공됩니다.<br />배민커넥트 앱을 통해 오늘 배달 여부를 확인해 주세요.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-title">주요 기능</div>
+        <ul class="feature-list">
+          <li>우리 가게 라이더향 혜택 조회</li>
+          <li>라이더 방문 시 혜택 조회 및 사용 처리</li>
+          <li>최근 3개월 이용 내역 통계</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="login-card">
+      <h2>파트너 로그인</h2>
+      <p class="subtitle">파트너님 계정으로 로그인해 주세요.</p>
+
+      <form id="loginForm" autocomplete="on">
+        <div class="form-group">
+          <input
+            type="text"
+            id="shopId"
+            class="form-input"
+            placeholder="사장님 ID"
+            autocomplete="username"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <input
+            type="password"
+            id="password"
+            class="form-input"
+            placeholder="비밀번호"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+
+        <div id="errorMsg" class="error-msg"></div>
+
+        <button type="submit" id="loginBtn" class="btn-login">
+          <span class="spinner"></span>
+          <span class="btn-text"><span class="btn-text-default">로그인</span></span>
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <p>ID/비밀번호를 모르시면 아래 링크를 클릭해<br />배민커넥트로 문의해 주세요.</p>
+      <a href="https://open.kakao.com/o/s7auK5vi" target="_blank" rel="noopener noreferrer" class="btn-kakao">
+        💬 배민커넥트 문의하기
+      </a>
+    </div>
+  </footer>
+  </div><!-- /#loginScreen -->
+
+  <div id="mainScreen" class="screen" hidden>
+    <header class="header">
+      <div class="header-inner main-header-inner">
+        <div class="welcome">
+          <strong id="welcomeShopName">식당명</strong> 사장님, 안녕하세요!
+        </div>
+        <button type="button" id="logoutBtn" class="btn-logout">로그아웃</button>
+      </div>
+    </header>
+
+    <main class="dashboard">
+      <article class="dash-card">
+        <div class="dash-card-head">
+          <span class="dash-icon">🏪</span>
+          <h3>우리 가게 현재 혜택</h3>
+        </div>
+        <div class="dash-card-body">
+          <dl class="benefit-preview" id="benefitPreview">
+            <div><dt>혜택 시간</dt><dd id="benefitTime" class="loading">로딩 중...</dd></div>
+            <div><dt>혜택 메뉴</dt><dd id="benefitMenu" class="loading">로딩 중...</dd></div>
+            <div><dt>혜택 내용</dt><dd id="benefitContent" class="loading">로딩 중...</dd></div>
+          </dl>
+          <div id="benefitError" class="benefit-error" hidden>데이터를 불러올 수 없습니다. 새로고침해 주세요.</div>
+        </div>
+        <button type="button" id="detailBtn" class="dash-btn">자세히 보기</button>
+      </article>
+
+      <article class="dash-card">
+        <div class="dash-card-head">
+          <span class="dash-icon">🎁</span>
+          <h3>혜택 제공</h3>
+        </div>
+        <div class="dash-card-body">
+          <p>라이더가 방문하면 클릭하여 혜택을 제공하세요.</p>
+        </div>
+        <button type="button" id="provideBtn" class="dash-btn">혜택 제공하기</button>
+      </article>
+
+      <article class="dash-card">
+        <div class="dash-card-head">
+          <span class="dash-icon">📊</span>
+          <h3>이용 현황 보기</h3>
+        </div>
+        <div class="dash-card-body">
+          <p>최근 3개월 통계를 확인하세요.</p>
+        </div>
+        <button type="button" id="statsBtn" class="dash-btn">통계 보기</button>
+      </article>
+    </main>
+  </div><!-- /#mainScreen -->
+
+  <div id="benefitStep1" class="screen" hidden>
+    <header class="header">
+      <div class="header-inner step-header">
+        <button type="button" class="btn-back" id="step1BackBtn" aria-label="뒤로">←</button>
+        <div class="step-title">🎁 혜택 제공</div>
+        <div class="step-spacer"></div>
+      </div>
+    </header>
+    <main class="step-main">
+      <div class="step-card">
+        <p class="step-guide">라이더 휴대폰 뒷 8자리 번호를<br />입력해 주세요.</p>
+        <input
+          type="tel"
+          id="riderNumberInput"
+          class="rider-input"
+          inputmode="numeric"
+          maxlength="8"
+          placeholder="12345678"
+          autocomplete="off"
+        />
+        <div id="step1Error" class="error-msg"></div>
+        <button type="button" id="lookupBtn" class="step-btn">조회하기</button>
+      </div>
+    </main>
+  </div><!-- /#benefitStep1 -->
+
+  <div id="benefitStep2" class="screen" hidden>
+    <header class="header">
+      <div class="header-inner step-header">
+        <button type="button" class="btn-back" id="step2BackBtn" aria-label="뒤로">←</button>
+        <div class="step-title">라이더: <span id="step2RiderNum">—</span></div>
+        <div class="step-spacer"></div>
+      </div>
+    </header>
+    <main class="step-main">
+      <div class="step-card">
+        <p class="step-guide" id="step2Guide">사용 가능한 쿠폰</p>
+        <div id="couponList" class="coupon-list"></div>
+        <button type="button" id="benefitSubmitBtn" class="step-btn" disabled>혜택 제공하기</button>
+      </div>
+    </main>
+  </div><!-- /#benefitStep2 -->
+
+  <div id="benefitStep3" class="screen" hidden>
+    <main class="step-main step-complete">
+      <div class="step-card complete-card">
+        <div class="complete-check">✓</div>
+        <h2 class="complete-title">혜택 제공 완료</h2>
+        <p class="complete-message" id="completeMessage">—</p>
+        <dl class="complete-detail">
+          <div><dt>라이더</dt><dd id="completeRider">—</dd></div>
+          <div><dt>처리 일시</dt><dd id="completeTime">—</dd></div>
+        </dl>
+        <div class="complete-actions">
+          <button type="button" id="completeNextBtn" class="step-btn">다음 라이더</button>
+          <button type="button" id="completeDoneBtn" class="step-btn btn-secondary">확인</button>
+        </div>
+      </div>
+    </main>
+  </div><!-- /#benefitStep3 -->
+
+  <div id="statsScreen" class="screen" hidden>
+    <header class="header">
+      <div class="header-inner step-header">
+        <button type="button" class="btn-back" id="statsBackBtn" aria-label="뒤로">←</button>
+        <div class="step-title">📊 이용 현황</div>
+        <div class="step-spacer"></div>
+      </div>
+    </header>
+    <main class="stats-main">
+      <div class="stats-shop-banner">
+        <strong id="statsShopName">—</strong>
+      </div>
+
+      <div id="statsLoading" class="stats-loading">
+        <div class="stats-spinner"></div>
+        <p>이용 현황 불러오는 중...</p>
+      </div>
+
+      <div id="statsError" class="stats-error" hidden>
+        <p>이용 현황을 불러올 수 없습니다.<br />다시 시도해 주세요.</p>
+        <button type="button" id="statsRetryBtn" class="step-btn">다시 시도</button>
+      </div>
+
+      <div id="statsContent" class="stats-content" hidden></div>
+
+      <p id="statsNote" class="stats-note" hidden>* 최근 3개월만 조회 가능합니다.</p>
+    </main>
+  </div><!-- /#statsScreen -->
+
+  <div id="detailModal" class="modal" hidden>
+    <div class="modal-backdrop"></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button type="button" class="modal-close" id="modalCloseBtn" aria-label="닫기">✕</button>
+      <h3 class="modal-title" id="modalTitle">우리 가게 혜택 상세</h3>
+
+      <dl class="detail-list">
+        <div><dt>식당명</dt><dd id="d-shopName">—</dd></div>
+        <div><dt>위치</dt><dd id="d-location">—</dd></div>
+        <div><dt>주소</dt><dd id="d-address">—</dd></div>
+        <div><dt>혜택 시간</dt><dd id="d-time">—</dd></div>
+        <div><dt>메뉴</dt><dd id="d-menu">—</dd></div>
+        <div><dt>가격</dt><dd id="d-price">—</dd></div>
+        <div><dt>혜택 내용</dt><dd id="d-benefit">—</dd></div>
+        <div><dt>안내사항</dt><dd id="d-notice">—</dd></div>
+      </dl>
+
+      <div class="modal-footer">
+        <a href="https://open.kakao.com/o/s7auK5vi" target="_blank" rel="noopener noreferrer" class="btn-change">
+          💬 혜택 변경 요청하기
+        </a>
+        <p class="modal-foot-note">* 처리까지 2~3일 소요될 수 있습니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbw-B3DcBCyWgIWU_LOWBvQamPR56Hhi8C0kYrAfS1mTQ_FEz5TEeLgElFlabjeu2_D-zA/exec';
+
+    const form = document.getElementById('loginForm');
+    const shopIdInput = document.getElementById('shopId');
+    const passwordInput = document.getElementById('password');
+    const errorMsg = document.getElementById('errorMsg');
+    const loginBtn = document.getElementById('loginBtn');
+
+    function showError(msg) {
+      errorMsg.textContent = msg;
+      errorMsg.classList.add('show');
+    }
+
+    function clearError() {
+      errorMsg.classList.remove('show');
+      errorMsg.textContent = '';
+    }
+
+    function setLoading(loading) {
+      if (loading) {
+        loginBtn.classList.add('loading');
+        loginBtn.disabled = true;
+      } else {
+        loginBtn.classList.remove('loading');
+        loginBtn.disabled = false;
+      }
+    }
+
+    [shopIdInput, passwordInput].forEach(el => {
+      el.addEventListener('input', clearError);
+    });
+
+    // === 화면 전환 ===
+    const loginScreen = document.getElementById('loginScreen');
+    const mainScreen = document.getElementById('mainScreen');
+    const detailModal = document.getElementById('detailModal');
+
+    function hideAllScreens() {
+      loginScreen.hidden = true;
+      mainScreen.hidden = true;
+      document.getElementById('benefitStep1').hidden = true;
+      document.getElementById('benefitStep2').hidden = true;
+      document.getElementById('benefitStep3').hidden = true;
+      document.getElementById('statsScreen').hidden = true;
+    }
+
+    function showLoginScreen() {
+      hideAllScreens();
+      loginScreen.hidden = false;
+    }
+
+    function showMainScreen() {
+      hideAllScreens();
+      mainScreen.hidden = false;
+
+      const shopName = sessionStorage.getItem('shopName') || '';
+      document.getElementById('welcomeShopName').textContent = shopName;
+
+      loadShopInfo();
+    }
+
+    let shopInfoLoadingInterval = null;
+    const SHOP_INFO_FIELDS = ['benefitTime', 'benefitMenu', 'benefitContent'];
+
+    function startShopInfoLoading() {
+      document.getElementById('benefitPreview').hidden = false;
+      document.getElementById('benefitError').hidden = true;
+
+      SHOP_INFO_FIELDS.forEach(id => {
+        const el = document.getElementById(id);
+        el.classList.add('loading');
+        el.textContent = '로딩 중...';
+      });
+
+      if (shopInfoLoadingInterval) clearInterval(shopInfoLoadingInterval);
+      let dots = 1;
+      shopInfoLoadingInterval = setInterval(() => {
+        const text = '로딩 중' + '.'.repeat(dots);
+        SHOP_INFO_FIELDS.forEach(id => {
+          const el = document.getElementById(id);
+          if (el.classList.contains('loading')) el.textContent = text;
+        });
+        dots = (dots % 3) + 1;
+      }, 400);
+    }
+
+    function stopShopInfoLoading() {
+      if (shopInfoLoadingInterval) {
+        clearInterval(shopInfoLoadingInterval);
+        shopInfoLoadingInterval = null;
+      }
+      SHOP_INFO_FIELDS.forEach(id => {
+        document.getElementById(id).classList.remove('loading');
+      });
+    }
+
+    function showShopInfoError() {
+      stopShopInfoLoading();
+      document.getElementById('benefitPreview').hidden = true;
+      document.getElementById('benefitError').hidden = false;
+    }
+
+    function loadShopInfo() {
+      const shopId = sessionStorage.getItem('shopId');
+      if (!shopId) return;
+
+      startShopInfoLoading();
+
+      fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'getMyShopInfo',
+          shopId: shopId
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.shopInfo) {
+          stopShopInfoLoading();
+          const info = data.shopInfo;
+          document.getElementById('benefitTime').textContent = info.benefitTime || '—';
+          document.getElementById('benefitMenu').textContent = info.benefitMenu || '—';
+          document.getElementById('benefitContent').textContent = info.benefit || '—';
+          window.shopInfo = info;
+        } else {
+          showShopInfoError();
+        }
+      })
+      .catch(err => {
+        console.error('shop info load error:', err);
+        showShopInfoError();
+      });
+    }
+
+    function logout() {
+      sessionStorage.removeItem('shopId');
+      sessionStorage.removeItem('shopName');
+      window.shopInfo = null;
+      if (shopInfoLoadingInterval) {
+        clearInterval(shopInfoLoadingInterval);
+        shopInfoLoadingInterval = null;
+      }
+      shopIdInput.value = '';
+      passwordInput.value = '';
+      clearError();
+      showLoginScreen();
+    }
+
+    function openDetailModal() {
+      const info = window.shopInfo || {};
+      const setText = (id, val) => {
+        document.getElementById(id).textContent = (val !== undefined && val !== null && val !== '') ? val : '—';
+      };
+      setText('d-shopName', info.shopName || sessionStorage.getItem('shopName'));
+      setText('d-location', info.location);
+      setText('d-address', info.address);
+      setText('d-time', info.benefitTime);
+      setText('d-menu', info.benefitMenu);
+      setText('d-price', info.price);
+      setText('d-benefit', info.benefit);
+      setText('d-notice', info.notice);
+
+      detailModal.hidden = false;
+    }
+
+    function closeDetailModal() {
+      detailModal.hidden = true;
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+    document.getElementById('detailBtn').addEventListener('click', openDetailModal);
+    document.getElementById('provideBtn').addEventListener('click', () => showBenefitStep1());
+    document.getElementById('statsBtn').addEventListener('click', () => showStatisticsScreen());
+    document.getElementById('modalCloseBtn').addEventListener('click', closeDetailModal);
+    document.querySelector('#detailModal .modal-backdrop').addEventListener('click', closeDetailModal);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !detailModal.hidden) closeDetailModal();
+    });
+
+    // === 혜택 제공 단계 ===
+    const benefitState = {
+      riderNumber: '',
+      availableCoupons: [],
+      selectedCouponSlot: null
+    };
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str).replace(/[&<>"']/g, (c) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[c]));
+    }
+
+    function setBtnLoading(btn, loading, loadingText) {
+      if (loading) {
+        if (!btn.dataset.originalText) {
+          btn.dataset.originalText = btn.textContent;
+        }
+        btn.textContent = loadingText || '처리 중...';
+        btn.disabled = true;
+      } else {
+        if (btn.dataset.originalText) {
+          btn.textContent = btn.dataset.originalText;
+          delete btn.dataset.originalText;
+        }
+        btn.disabled = false;
+      }
+    }
+
+    function showBenefitStep1() {
+      hideAllScreens();
+      document.getElementById('benefitStep1').hidden = false;
+
+      benefitState.riderNumber = '';
+      benefitState.availableCoupons = [];
+      benefitState.selectedCouponSlot = null;
+
+      const input = document.getElementById('riderNumberInput');
+      input.value = '';
+      const errorDiv = document.getElementById('step1Error');
+      errorDiv.classList.remove('show');
+      errorDiv.textContent = '';
+      setBtnLoading(document.getElementById('lookupBtn'), false);
+
+      setTimeout(() => input.focus(), 50);
+    }
+
+    function showBenefitStep2(riderNumber, coupons) {
+      hideAllScreens();
+      document.getElementById('benefitStep2').hidden = false;
+
+      benefitState.riderNumber = riderNumber;
+      benefitState.availableCoupons = Array.isArray(coupons) ? coupons : [];
+      benefitState.selectedCouponSlot = null;
+
+      document.getElementById('step2RiderNum').textContent = riderNumber;
+      renderCouponList();
+      updateProvideButton();
+      setBtnLoading(document.getElementById('benefitSubmitBtn'), false);
+    }
+
+    function showBenefitStep3(result) {
+      hideAllScreens();
+      document.getElementById('benefitStep3').hidden = false;
+
+      const msg = document.getElementById('completeMessage');
+      if (result.useCoupon && result.coupon) {
+        const c = result.coupon;
+        const couponName = c.name || c.couponName || c.title || '쿠폰';
+        const amountField = c.discount || c.discountText || c.amount || c.value || '';
+        const amountStr = String(amountField);
+        const amountDisplay = /^[\d,]+$/.test(amountStr) ? `${amountStr}원` : amountStr;
+        msg.textContent = amountDisplay
+          ? `${couponName} (${amountDisplay}) 사용 처리됐어요`
+          : `${couponName} 사용 처리됐어요`;
+      } else if (result.useCoupon) {
+        msg.textContent = '쿠폰 사용 처리됐어요';
+      } else {
+        msg.textContent = '방문 기록이 완료됐어요';
+      }
+
+      document.getElementById('completeRider').textContent = result.riderNumber || '—';
+
+      const sd = result.serverData || {};
+      const serverTime = sd.timestamp || sd.processedAt || sd.processedTime || sd.time;
+      const time = serverTime || new Date().toLocaleString('ko-KR');
+      document.getElementById('completeTime').textContent = time;
+    }
+
+    function formatAmount(amount) {
+      if (amount === null || amount === undefined || amount === '') return '—';
+      const str = String(amount).trim();
+      const numMatch = str.match(/[\d,]+/);
+      if (numMatch) {
+        const num = Number(numMatch[0].replace(/,/g, ''));
+        if (!Number.isNaN(num) && Number.isFinite(num) && num > 0) {
+          return num.toLocaleString('ko-KR') + '원';
+        }
+      }
+      return str;
+    }
+
+    function renderCouponList() {
+      const list = document.getElementById('couponList');
+      const guide = document.getElementById('step2Guide');
+      const coupons = benefitState.availableCoupons;
+
+      list.innerHTML = '';
+
+      const totalCount = coupons.length;
+      const availableCount = coupons.filter(c => (c.status || 'available').toLowerCase() === 'available').length;
+
+      if (totalCount === 0) {
+        guide.textContent = '사용 가능한 쿠폰이 없습니다';
+      } else if (availableCount === 0) {
+        guide.innerHTML = '사용 가능한 쿠폰이 없습니다 <span class="coupon-info-sub">(보유 쿠폰 ' + totalCount + '개)</span>';
+      } else {
+        guide.innerHTML = '사용 가능한 쿠폰 <strong>' + availableCount + '개</strong> <span class="coupon-info-sub">(보유 쿠폰 ' + totalCount + '개 중)</span>';
+      }
+
+      coupons.forEach((c, idx) => {
+        const status = (c.status || 'available').toLowerCase();
+        const slot = c.slot ?? c.couponSlot ?? c.id ?? idx;
+        const name = c.name || c.couponName || c.title || '쿠폰';
+        const amountField = c.amount ?? c.discount ?? c.discountAmount ?? c.value;
+        const expiry = c.validUntil || c.expiry || c.expireDate || c.expiryDate || '';
+        const usedDate = c.usedDate || c.usedAt || '';
+
+        const amountText = formatAmount(amountField);
+
+        const card = document.createElement('div');
+        let classes = 'coupon-card';
+        if (status === 'used') classes += ' disabled used';
+        else if (status === 'expired') classes += ' disabled expired';
+        card.className = classes;
+        card.dataset.slot = String(slot);
+        card.dataset.status = status;
+
+        // 좌측: 쿠폰명 + 유효기간 + (선택 or 사용일)
+        let leftBottomHtml = '';
+        if (status === 'available') {
+          leftBottomHtml =
+            '<div class="coupon-card-select">' +
+              '<div class="coupon-card-radio"></div>' +
+              '<span class="coupon-card-select-label">선택</span>' +
+            '</div>';
+        } else if (status === 'used' && usedDate) {
+          leftBottomHtml = '<div class="used-date-line">' + escapeHtml(usedDate) + ' 사용</div>';
+        }
+        const leftHtml =
+          '<div class="coupon-card-left">' +
+            '<div class="name-line">' + escapeHtml(name) + '</div>' +
+            (expiry ? '<div class="expiry-line">유효기간: ' + escapeHtml(expiry) + '</div>' : '') +
+            leftBottomHtml +
+          '</div>';
+
+        // 우측: 박스 (이모지/상태 + 금액)
+        let topLineHtml;
+        if (status === 'used') {
+          topLineHtml = '<span class="amount-status">사용 완료</span>';
+        } else if (status === 'expired') {
+          topLineHtml = '<span class="amount-status expired-status">기간 만료</span>';
+        } else {
+          topLineHtml = '<div class="amount-emoji">🍚</div>';
+        }
+        const rightHtml =
+          '<div class="coupon-card-right">' +
+            '<div class="amount-box">' +
+              topLineHtml +
+              '<div class="amount-text">' + escapeHtml(amountText) + '</div>' +
+            '</div>' +
+          '</div>';
+
+        card.innerHTML = leftHtml + rightHtml;
+
+        if (status === 'available') {
+          card.addEventListener('click', () => selectCoupon(String(slot)));
+        }
+
+        list.appendChild(card);
+      });
+
+      // "방문만 기록" 옵션
+      const noCoupon = document.createElement('div');
+      noCoupon.className = 'no-coupon-option';
+      noCoupon.dataset.slot = 'none';
+      noCoupon.innerHTML =
+        '<div class="coupon-card-radio"></div>' +
+        '<span class="no-coupon-label">쿠폰 없이 방문만 기록</span>';
+      noCoupon.addEventListener('click', () => selectCoupon('none'));
+      list.appendChild(noCoupon);
+    }
+
+    function selectCoupon(slot) {
+      benefitState.selectedCouponSlot = slot;
+      document.querySelectorAll('#couponList .coupon-card, #couponList .no-coupon-option').forEach(item => {
+        if (item.dataset.slot === slot) {
+          item.classList.add('selected');
+        } else {
+          item.classList.remove('selected');
+        }
+      });
+      updateProvideButton();
+    }
+
+    function updateProvideButton() {
+      const btn = document.getElementById('benefitSubmitBtn');
+      btn.disabled = benefitState.selectedCouponSlot === null;
+    }
+
+    async function handleLookup() {
+      const input = document.getElementById('riderNumberInput');
+      const errorDiv = document.getElementById('step1Error');
+      const riderNumber = input.value.trim();
+
+      if (!/^\d{8}$/.test(riderNumber)) {
+        errorDiv.textContent = '8자리 숫자를 입력해 주세요.';
+        errorDiv.classList.add('show');
+        return;
+      }
+
+      errorDiv.classList.remove('show');
+      const btn = document.getElementById('lookupBtn');
+      setBtnLoading(btn, true, '조회 중...');
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'getRiderCoupons',
+            riderNumber: riderNumber
+          })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          const allCoupons = data.coupons || data.availableCoupons || [];
+          showBenefitStep2(data.riderNumber || riderNumber, allCoupons);
+        } else {
+          errorDiv.textContent = data.message || '조회에 실패했습니다.';
+          errorDiv.classList.add('show');
+          setBtnLoading(btn, false);
+        }
+      } catch (err) {
+        errorDiv.textContent = '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.';
+        errorDiv.classList.add('show');
+        setBtnLoading(btn, false);
+      }
+    }
+
+    async function handleProvide() {
+      const slot = benefitState.selectedCouponSlot;
+      if (slot === null) return;
+
+      const btn = document.getElementById('benefitSubmitBtn');
+      setBtnLoading(btn, true, '처리 중...');
+
+      const payload = {
+        action: 'provideBenefit',
+        shopId: sessionStorage.getItem('shopId'),
+        shopName: sessionStorage.getItem('shopName'),
+        riderNumber: benefitState.riderNumber,
+        useCoupon: slot !== 'none'
+      };
+      if (slot !== 'none') {
+        payload.couponSlot = slot;
+      }
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          let coupon = null;
+          if (slot !== 'none') {
+            coupon = benefitState.availableCoupons.find(c => {
+              const cSlot = c.slot ?? c.couponSlot ?? c.id;
+              return String(cSlot) === String(slot);
+            }) || null;
+          }
+          showBenefitStep3({
+            useCoupon: slot !== 'none',
+            coupon: coupon,
+            riderNumber: benefitState.riderNumber,
+            serverData: data
+          });
+        } else {
+          alert('오류: ' + (data.message || '처리에 실패했습니다.'));
+          setBtnLoading(btn, false);
+          updateProvideButton();
+        }
+      } catch (err) {
+        alert('네트워크 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+        setBtnLoading(btn, false);
+        updateProvideButton();
+      }
+    }
+
+    // 혜택 제공 이벤트 핸들러
+    document.getElementById('step1BackBtn').addEventListener('click', showMainScreen);
+    document.getElementById('step2BackBtn').addEventListener('click', showBenefitStep1);
+    document.getElementById('lookupBtn').addEventListener('click', handleLookup);
+    document.getElementById('benefitSubmitBtn').addEventListener('click', handleProvide);
+    document.getElementById('completeNextBtn').addEventListener('click', showBenefitStep1);
+    document.getElementById('completeDoneBtn').addEventListener('click', showMainScreen);
+
+    const riderInput = document.getElementById('riderNumberInput');
+    riderInput.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/\D/g, '').slice(0, 8);
+      const errorDiv = document.getElementById('step1Error');
+      if (errorDiv.classList.contains('show')) {
+        errorDiv.classList.remove('show');
+      }
+    });
+    riderInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleLookup();
+      }
+    });
+
+    // === 이용 현황 ===
+    const KOR_DAYS = ['일', '월', '화', '수', '목', '금', '토'];
+
+    function formatMoney(amount) {
+      const num = Number(amount);
+      if (!Number.isFinite(num)) return '0원';
+      return num.toLocaleString('ko-KR') + '원';
+    }
+
+    function formatDateShort(dateString) {
+      if (!dateString) return '';
+      const d = new Date(dateString);
+      if (Number.isNaN(d.getTime())) return String(dateString);
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      return mm + '-' + dd + ' (' + KOR_DAYS[d.getDay()] + ')';
+    }
+
+    function showStatisticsScreen() {
+      hideAllScreens();
+      document.getElementById('statsScreen').hidden = false;
+
+      const shopName = sessionStorage.getItem('shopName') || '';
+      document.getElementById('statsShopName').textContent = shopName;
+
+      loadStatistics();
+    }
+
+    function loadStatistics() {
+      const shopId = sessionStorage.getItem('shopId');
+      if (!shopId) return;
+
+      document.getElementById('statsLoading').hidden = false;
+      document.getElementById('statsError').hidden = true;
+      document.getElementById('statsContent').hidden = true;
+      document.getElementById('statsNote').hidden = true;
+
+      fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'getStatistics',
+          shopId: shopId
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('statsLoading').hidden = true;
+        if (data.success) {
+          renderStatistics(data);
+        } else {
+          document.getElementById('statsError').hidden = false;
+        }
+      })
+      .catch(err => {
+        console.error('statistics load error:', err);
+        document.getElementById('statsLoading').hidden = true;
+        document.getElementById('statsError').hidden = false;
+      });
+    }
+
+    function renderStatistics(data) {
+      const content = document.getElementById('statsContent');
+      const note = document.getElementById('statsNote');
+      const monthlyStats = Array.isArray(data.monthlyStats) ? data.monthlyStats : [];
+
+      content.innerHTML = '';
+
+      // 최신 월이 위로 (year, month 내림차순)
+      const sorted = monthlyStats.slice().sort((a, b) => {
+        if (a.year !== b.year) return b.year - a.year;
+        return b.month - a.month;
+      });
+
+      const hasAnyData = sorted.some(m => {
+        const t = m.monthlyTotal || {};
+        return (t.totalVisits || 0) > 0 || (t.couponUsedCount || 0) > 0;
+      });
+
+      if (!hasAnyData) {
+        content.innerHTML = '<div class="stats-empty-all">최근 3개월간 이용 내역이 없습니다.</div>';
+      } else {
+        const now = new Date();
+        const thisYear = now.getFullYear();
+        const thisMonth = now.getMonth() + 1;
+
+        sorted.forEach(monthData => {
+          const year = monthData.year;
+          const month = monthData.month;
+          const isThisMonth = (year === thisYear && month === thisMonth);
+
+          const total = monthData.monthlyTotal || {};
+          const visits = total.totalVisits || 0;
+          const couponCount = total.couponUsedCount || 0;
+          const couponAmount = total.couponUsedAmount || 0;
+
+          const daily = Array.isArray(monthData.dailyStats) ? monthData.dailyStats : [];
+
+          const section = document.createElement('section');
+          section.className = 'month-section';
+
+          let html = '<div class="month-header">' +
+                       '<span class="month-title">📅 ' + year + '년 ' + month + '월</span>' +
+                       (isThisMonth ? '<span class="month-badge">이번 달</span>' : '') +
+                     '</div>';
+
+          if (visits === 0 && couponCount === 0 && daily.length === 0) {
+            html += '<div class="month-empty">이용 내역이 없습니다</div>';
+            section.innerHTML = html;
+            content.appendChild(section);
+            return;
+          }
+
+          html += '<div class="month-summary">' +
+                    '<div class="month-summary-item">' +
+                      '<span class="month-summary-label">방문</span>' +
+                      '<span class="month-summary-value">' + visits + '건</span>' +
+                    '</div>' +
+                    '<div class="month-summary-item">' +
+                      '<span class="month-summary-label">쿠폰 사용</span>' +
+                      '<span class="month-summary-value">' + couponCount + '건</span>' +
+                    '</div>' +
+                    '<div class="month-summary-item">' +
+                      '<span class="month-summary-label">쿠폰 금액</span>' +
+                      '<span class="month-summary-value">' + escapeHtml(formatMoney(couponAmount)) + '</span>' +
+                    '</div>' +
+                  '</div>';
+
+          if (daily.length > 0) {
+            const sortedDays = daily.slice().sort((a, b) => {
+              const ad = String(a.date || '');
+              const bd = String(b.date || '');
+              return (ad < bd) ? 1 : (ad > bd ? -1 : 0);
+            });
+
+            html += '<div class="daily-list">';
+            sortedDays.forEach(day => {
+              const dateText = formatDateShort(day.date);
+              const dv = day.visits || 0;
+              const dc = day.couponUsedCount || 0;
+              const da = day.couponUsedAmount || 0;
+
+              html += '<div class="daily-row">' +
+                        '<div class="daily-date">' + escapeHtml(dateText) + '</div>' +
+                        '<div class="daily-counts">' +
+                          '<span>방문 ' + dv + '</span>' +
+                          '<span>쿠폰 ' + dc + '</span>' +
+                        '</div>' +
+                        '<div class="daily-amount">' + escapeHtml(formatMoney(da)) + '</div>' +
+                      '</div>';
+            });
+            html += '</div>';
+          }
+
+          section.innerHTML = html;
+          content.appendChild(section);
+        });
+      }
+
+      content.hidden = false;
+      note.textContent = '* ' + (data.note || '최근 3개월만 조회 가능합니다.');
+      note.hidden = false;
+    }
+
+    document.getElementById('statsBackBtn').addEventListener('click', showMainScreen);
+    document.getElementById('statsRetryBtn').addEventListener('click', loadStatistics);
+
+    // 초기 라우팅: sessionStorage에 정보가 있으면 메인, 없으면 로그인
+    if (sessionStorage.getItem('shopId') && sessionStorage.getItem('shopName')) {
+      showMainScreen();
+    } else {
+      showLoginScreen();
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearError();
+
+      const id = shopIdInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!id || !password) {
+        showError('ID와 비밀번호를 모두 입력해 주세요.');
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'login',
+            id: id,
+            password: password
+          })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          sessionStorage.setItem('shopId', data.shopId);
+          sessionStorage.setItem('shopName', data.shopName);
+          showMainScreen();
+        } else {
+          showError(data.message || '로그인에 실패했습니다.');
+        }
+      } catch (err) {
+        showError('네트워크 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>
